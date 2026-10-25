@@ -1,0 +1,3301 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>AQUILA A210 — Wissenssystem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Share+Tech+Mono&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg0:#0a0b0d;
+    --bg1:#101216;
+    --panel:#14171c;
+    --panel2:#171b21;
+    --border:#262a31;
+    --border-lit:#3a3f48;
+    --white:#f2f4f6;
+    --muted:#8b929c;
+    --dim:#5c626c;
+    --amber:#e0a02f;
+    --amber-dim:#7a5a1c;
+    --green:#43c66b;
+    --green-dim:#1f5e34;
+    --red:#e0524f;
+    --red-dim:#5e2422;
+    --ice:#6fb8c8;
+    --grid:rgba(120,140,170,0.045);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--bg0);
+    color:var(--white);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+    min-height:100vh;
+    background-image:
+      linear-gradient(var(--grid) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:44px 44px;
+  }
+  .wrap{
+    max-width:1120px;
+    margin:0 auto;
+    padding:clamp(16px,3vw,32px);
+    padding-bottom:64px;
+  }
+  .mono{font-family:'Share Tech Mono',monospace}
+  .display{font-family:'Oswald',sans-serif;letter-spacing:.01em}
+
+  /* ---------- TOP BAR ---------- */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:16px;padding:6px 0 20px;border-bottom:1px solid var(--border);
+    flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:center;gap:14px}
+  .roundel{width:44px;height:44px;flex:none}
+  .brand-txt .name{
+    font-family:'Oswald',sans-serif;font-weight:700;font-size:20px;
+    letter-spacing:.14em;line-height:1;
+  }
+  .brand-txt .sub{
+    font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);
+    letter-spacing:.12em;margin-top:5px;
+  }
+  .plate{
+    font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);
+    text-align:right;letter-spacing:.1em;line-height:1.8;
+  }
+  .plate b{color:var(--amber);font-weight:400}
+  .plate .ver{color:var(--dim);font-size:10px;letter-spacing:.14em}
+
+  /* ---------- START HERO ---------- */
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;margin:clamp(28px,6vw,56px) 0 22px;
+    padding:8px 16px;border:1px solid var(--amber-dim);border-radius:2px;
+    font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.22em;
+    color:var(--amber);background:rgba(224,160,47,.05);
+  }
+  .eyebrow::before{content:'\25B8';color:var(--amber)}
+  h1.hero{
+    font-family:'Oswald',sans-serif;font-weight:700;
+    font-size:clamp(2.6rem,9vw,6rem);line-height:.94;letter-spacing:.005em;
+    text-transform:uppercase;margin-bottom:24px;
+  }
+  h1.hero .accent{color:var(--amber)}
+  .lede{
+    max-width:620px;color:var(--muted);font-size:clamp(15px,2.2vw,18px);
+    margin-bottom:clamp(28px,5vw,44px);
+  }
+
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
+    margin-bottom:clamp(28px,5vw,40px);
+  }
+  .stat{
+    border:1px solid var(--border);border-radius:3px;background:var(--panel);
+    padding:20px 18px;position:relative;overflow:hidden;
+  }
+  .stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--amber)}
+  .stat .val{
+    font-family:'Oswald',sans-serif;font-weight:600;font-size:clamp(28px,5vw,36px);
+    line-height:1;color:var(--white);
+  }
+  .stat .val.stars{color:var(--amber);font-size:clamp(22px,4vw,28px);letter-spacing:2px}
+  .stat .lbl{
+    font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.16em;
+    color:var(--muted);margin-top:12px;
+  }
+
+  .cats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:clamp(30px,5vw,44px)}
+  .cat{
+    display:flex;align-items:center;gap:12px;
+    border:1px solid var(--border);border-radius:3px;background:var(--panel);
+    padding:16px 18px;font-size:15px;color:var(--white);
+  }
+  .cat .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);flex:none}
+
+  .btn{
+    font-family:'Share Tech Mono',monospace;letter-spacing:.16em;
+    border:none;border-radius:3px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:14px;
+    padding:18px 30px;font-size:15px;transition:transform .12s ease,filter .12s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .btn-primary{background:var(--amber);color:#1a1206;font-weight:400}
+  .btn-primary:hover{filter:brightness(1.08)}
+  .btn-primary:active{transform:translateY(1px)}
+  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
+  .btn-ghost:hover{border-color:var(--border-lit);color:var(--white)}
+  .btn:focus-visible{outline:2px solid var(--ice);outline-offset:3px}
+
+  /* ---------- QUIZ ---------- */
+  .quiz{max-width:760px;margin:0 auto}
+  .q-head{padding:clamp(20px,4vw,32px) 0 22px}
+  .progress-row{
+    display:flex;align-items:center;justify-content:space-between;
+    font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);
+    letter-spacing:.12em;margin-bottom:12px;
+  }
+  .progress-row .score b{color:var(--amber)}
+  .bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+  .bar > i{display:block;height:100%;background:var(--amber);width:0;transition:width .35s ease}
+
+  .q-cat{
+    font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.18em;
+    color:var(--amber);margin:clamp(20px,4vw,32px) 0 14px;
+  }
+  .q-text{
+    font-family:'Oswald',sans-serif;font-weight:500;
+    font-size:clamp(22px,4.4vw,32px);line-height:1.18;margin-bottom:clamp(22px,4vw,32px);
+  }
+  .options{display:flex;flex-direction:column;gap:12px}
+  .opt{
+    display:flex;align-items:center;gap:16px;width:100%;text-align:left;
+    border:1px solid var(--border);border-radius:4px;background:var(--panel);
+    color:var(--white);padding:18px 20px;font-size:clamp(15px,2.4vw,17px);
+    cursor:pointer;transition:border-color .12s,background .12s;min-height:60px;
+    font-family:'Inter',sans-serif;-webkit-tap-highlight-color:transparent;
+  }
+  .opt:hover:not(:disabled){border-color:var(--border-lit);background:var(--panel2)}
+  .opt:focus-visible{outline:2px solid var(--ice);outline-offset:2px}
+  .opt .key{
+    font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--muted);
+    border:1px solid var(--border);border-radius:3px;width:30px;height:30px;flex:none;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .opt:disabled{cursor:default}
+  .opt.correct{border-color:var(--green);background:rgba(67,198,107,.08)}
+  .opt.correct .key{border-color:var(--green);color:var(--green);background:rgba(67,198,107,.12)}
+  .opt.wrong{border-color:var(--red);background:rgba(224,82,79,.07)}
+  .opt.wrong .key{border-color:var(--red);color:var(--red);background:rgba(224,82,79,.12)}
+  .opt.muted{opacity:.45}
+  .opt .mark{margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.1em}
+  .opt.correct .mark{color:var(--green)}
+  .opt.wrong .mark{color:var(--red)}
+
+  .explain{
+    margin-top:20px;border:1px solid var(--border);border-left:3px solid var(--amber);
+    border-radius:3px;background:var(--panel);padding:18px 20px;
+    animation:fade .25s ease;
+  }
+  .explain .tag{
+    font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.16em;
+    color:var(--amber);margin-bottom:8px;
+  }
+  .explain p{color:var(--muted);font-size:15px}
+  .explain .ref{
+    display:inline-block;margin-top:12px;font-family:'Share Tech Mono',monospace;
+    font-size:11px;color:var(--dim);letter-spacing:.08em;
+  }
+  .q-foot{display:flex;justify-content:flex-end;margin-top:24px}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+  /* ---------- RESULT ---------- */
+  .result{max-width:720px;margin:0 auto;text-align:center;padding-top:clamp(24px,6vw,56px)}
+  .result .band{
+    font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.24em;
+    color:var(--amber);margin-bottom:20px;
+  }
+  .result .big{
+    font-family:'Oswald',sans-serif;font-weight:700;
+    font-size:clamp(3.6rem,16vw,8rem);line-height:.9;
+  }
+  .result .big span{color:var(--muted);font-size:.4em}
+  .result .verdict{
+    font-family:'Oswald',sans-serif;font-weight:600;text-transform:uppercase;
+    font-size:clamp(1.4rem,4vw,2rem);letter-spacing:.04em;margin:16px 0 8px;
+  }
+  .result .verdict.ok{color:var(--green)}
+  .result .verdict.mid{color:var(--amber)}
+  .result .verdict.low{color:var(--red)}
+  .result .rsub{color:var(--muted);margin-bottom:32px}
+  .breakdown{text-align:left;margin:0 auto 36px;max-width:520px;display:flex;flex-direction:column;gap:8px}
+  .brow{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    border:1px solid var(--border);border-radius:3px;background:var(--panel);
+    padding:12px 16px;font-size:14px;
+  }
+  .brow .bc{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.06em}
+  .brow .bc.g{color:var(--green)}
+  .brow .bc.r{color:var(--red)}
+  .result-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+  .hidden{display:none !important}
+
+  @media (max-width:640px){
+    .stats{grid-template-columns:1fr 1fr}
+    .stats .stat:last-child{grid-column:1 / -1}
+    .cats{grid-template-columns:1fr}
+    .plate{text-align:left}
+    .topbar{gap:10px}
+  }
+  /* ---------- HOME HUB ---------- */
+  .modecards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:clamp(24px,5vw,40px) 0}
+  .modecard{
+    text-align:left;border:1px solid var(--border);border-radius:4px;background:var(--panel);
+    padding:clamp(22px,3vw,30px);cursor:pointer;position:relative;overflow:hidden;
+    transition:border-color .14s,transform .12s,background .14s;color:var(--white);
+    display:flex;flex-direction:column;gap:14px;min-height:220px;
+  }
+  .modecard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--amber)}
+  .modecard:hover{border-color:var(--border-lit);background:var(--panel2);transform:translateY(-2px)}
+  .modecard:focus-visible{outline:2px solid var(--ice);outline-offset:3px}
+  .modecard.emg::before{background:var(--red)}
+  .mc-eyebrow{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--amber)}
+  .modecard.emg .mc-eyebrow{color:var(--red)}
+  .mc-title{font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;
+    font-size:clamp(24px,3.4vw,32px);line-height:1;letter-spacing:.01em}
+  .mc-desc{color:var(--muted);font-size:14px;flex:1}
+  .mc-foot{display:flex;align-items:center;justify-content:space-between;
+    font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--dim);letter-spacing:.08em}
+  .mc-foot .go{color:var(--amber);font-size:18px}
+  .modecard.emg .mc-foot .go{color:var(--red)}
+
+  /* ---------- BACK LINK ---------- */
+  .backlink{background:none;border:none;color:var(--muted);cursor:pointer;
+    font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.14em;
+    padding:8px 0;margin-bottom:8px;-webkit-tap-highlight-color:transparent}
+  .backlink:hover{color:var(--amber)}
+  .backlink:focus-visible{outline:2px solid var(--ice);outline-offset:2px}
+
+  /* ---------- EMERGENCY MENU ---------- */
+  .emg-wrap{max-width:820px;margin:0 auto}
+  .emg-intro{font-family:'Oswald',sans-serif;font-weight:600;text-transform:uppercase;
+    font-size:clamp(1.8rem,5vw,2.6rem);line-height:1;margin:6px 0 6px}
+  .emg-sub{color:var(--muted);font-size:15px;margin-bottom:clamp(20px,4vw,32px)}
+  .emg-group{margin-bottom:26px}
+  .emg-grouphead{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.18em;
+    color:var(--amber);padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px}
+  .emg-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .emg-item{display:flex;align-items:center;gap:12px;text-align:left;
+    border:1px solid var(--border);border-radius:3px;background:var(--panel);color:var(--white);
+    padding:15px 16px;font-size:14.5px;cursor:pointer;transition:border-color .12s,background .12s;
+    -webkit-tap-highlight-color:transparent;min-height:56px}
+  .emg-item:hover{border-color:var(--border-lit);background:var(--panel2)}
+  .emg-item:focus-visible{outline:2px solid var(--ice);outline-offset:2px}
+  .emg-item .ph{width:6px;height:6px;border-radius:50%;background:var(--amber);flex:none}
+  .emg-item.crit .ph{background:var(--red)}
+  .emg-item .arrow{margin-left:auto;color:var(--dim);font-family:'Share Tech Mono',monospace}
+
+  /* ---------- EMERGENCY TRAINER ---------- */
+  .emg-t{max-width:760px;margin:0 auto}
+  .emg-thead{margin:6px 0 16px}
+  .emg-tgroup{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.18em;color:var(--amber)}
+  .emg-ttitle{font-family:'Oswald',sans-serif;font-weight:600;text-transform:uppercase;
+    font-size:clamp(1.5rem,4.4vw,2.1rem);line-height:1.08;margin-top:8px}
+  .emg-toggle{display:inline-flex;border:1px solid var(--border);border-radius:4px;overflow:hidden;margin:6px 0 20px}
+  .emg-toggle button{background:transparent;border:none;color:var(--muted);cursor:pointer;
+    font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.14em;padding:11px 20px;
+    -webkit-tap-highlight-color:transparent}
+  .emg-toggle button.on{background:var(--amber);color:#1a1206}
+  .emg-toggle button:focus-visible{outline:2px solid var(--ice);outline-offset:-2px}
+  .sit{border:1px solid var(--border);border-left:3px solid var(--ice);border-radius:3px;
+    background:var(--panel);padding:14px 16px;margin-bottom:20px;color:var(--muted);font-size:14.5px}
+  .sit b{color:var(--ice);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.14em;
+    display:block;margin-bottom:6px}
+  .steps2{display:flex;flex-direction:column;gap:8px}
+  .step{display:flex;align-items:flex-start;gap:14px;border:1px solid var(--border);border-radius:3px;
+    background:var(--panel);padding:14px 16px;animation:fade .2s ease}
+  .step .idx{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--amber);
+    border:1px solid var(--amber-dim);border-radius:3px;min-width:26px;height:26px;flex:none;
+    display:flex;align-items:center;justify-content:center}
+  .step .body{flex:1}
+  .step .ctrl{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.05em;color:var(--muted);
+    text-transform:uppercase}
+  .step .act{font-size:15px;color:var(--white);margin-top:3px;font-weight:500}
+  .step.crit{border-left:3px solid var(--red)}
+  .step .sofort{display:inline-block;font-family:'Share Tech Mono',monospace;font-size:10px;
+    letter-spacing:.12em;color:var(--red);border:1px solid var(--red-dim);border-radius:2px;
+    padding:2px 6px;margin-top:6px}
+  .step.warn{border-left:3px solid var(--amber)}
+  .step.warn .act{color:var(--amber)}
+  .merke{margin-top:20px;border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:3px;
+    background:var(--panel);padding:16px 18px}
+  .merke .tag{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--amber);margin-bottom:8px}
+  .merke p{color:var(--muted);font-size:14.5px}
+  .merke .ref{display:inline-block;margin-top:10px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--dim);letter-spacing:.08em}
+  .reveal-card{border:1px dashed var(--border-lit);border-radius:3px;background:var(--panel2);
+    padding:18px 16px;margin-top:8px;text-align:center}
+  .reveal-card .prompt{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.12em;color:var(--muted);margin-bottom:14px}
+  .emg-done{text-align:center;border:1px solid var(--green-dim);border-radius:3px;background:rgba(67,198,107,.06);
+    padding:16px;margin-top:8px;font-family:'Share Tech Mono',monospace;font-size:13px;letter-spacing:.1em;color:var(--green)}
+  .emg-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+
+  @media (max-width:640px){
+    .modecards{grid-template-columns:1fr}
+    .emg-list{grid-template-columns:1fr}
+  }
+
+  /* ---------- PILOT-TIPP (vertieftes Airmanship-Wissen) ---------- */
+  details.tip{margin-top:12px;border:1px solid var(--border);border-left:3px solid var(--ice);
+    border-radius:3px;background:var(--panel);overflow:hidden}
+  details.tip summary{cursor:pointer;list-style:none;padding:13px 16px;
+    font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--ice);
+    display:flex;align-items:center;gap:9px;-webkit-tap-highlight-color:transparent}
+  details.tip summary::-webkit-details-marker{display:none}
+  details.tip summary::before{content:'▸';display:inline-block;transition:transform .15s ease}
+  details.tip[open] summary::before{transform:rotate(90deg)}
+  details.tip summary:focus-visible{outline:2px solid var(--ice);outline-offset:-2px}
+  details.tip .tipbody{padding:0 16px 15px;color:var(--muted);font-size:14px;line-height:1.6}
+  details.tip .tipbody b{color:var(--white);font-weight:600}
+
+  .buildline{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.12em;
+    color:var(--dim);margin:-8px 0 6px}
+  .buildline b{color:var(--muted);font-weight:400}
+
+  /* ---------- MUSTER-UMSCHALTER ---------- */
+  .musterbar{display:flex;align-items:center;gap:14px;margin:clamp(18px,4vw,28px) 0 2px}
+  .mb-label{font-size:12px;letter-spacing:.2em;color:var(--muted)}
+  .mb-toggle{display:inline-flex;border:1px solid var(--border);border-radius:4px;overflow:hidden}
+  .mb-toggle button{background:transparent;border:none;color:var(--muted);cursor:pointer;
+    font-family:'Oswald',sans-serif;font-weight:600;font-size:15px;letter-spacing:.08em;
+    padding:9px 22px;-webkit-tap-highlight-color:transparent;transition:background .12s,color .12s}
+  .mb-toggle button.on{background:var(--amber);color:#1a1206}
+  .mb-toggle button:focus-visible{outline:2px solid var(--ice);outline-offset:-2px}
+
+  /* ---------- GLOSSAR ---------- */
+  .modecard.gloss::before{background:var(--ice)}
+  .modecard.gloss .mc-eyebrow{color:var(--ice)}
+  .modecard.gloss .mc-foot .go{color:var(--ice)}
+  .gloss-wrap{max-width:820px;margin:0 auto}
+  .gloss-search{width:100%;box-sizing:border-box;margin:4px 0 22px;padding:15px 18px;
+    background:var(--panel);border:1px solid var(--border);border-radius:4px;color:var(--white);
+    font-family:'Share Tech Mono',monospace;font-size:15px;letter-spacing:.04em;outline:none}
+  .gloss-search:focus{border-color:var(--ice)}
+  .gloss-search::placeholder{color:var(--dim)}
+  .gloss-group{margin-bottom:24px}
+  .gloss-grouphead{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.18em;
+    color:var(--ice);padding-bottom:9px;border-bottom:1px solid var(--border);margin-bottom:10px}
+  .gentry{display:grid;grid-template-columns:140px 1fr;gap:16px;align-items:start;
+    border:1px solid var(--border);border-radius:3px;background:var(--panel);
+    padding:14px 16px;margin-bottom:8px}
+  .gentry .abbr{font-family:'Oswald',sans-serif;font-weight:600;font-size:17px;color:var(--amber);line-height:1.15}
+  .gentry .abbr .term{display:block;font-family:'Inter',sans-serif;font-weight:400;font-size:12px;
+    color:var(--muted);letter-spacing:.02em;margin-top:3px}
+  .gentry .def{color:var(--muted);font-size:14.5px;line-height:1.55}
+  .gloss-none{color:var(--dim);font-family:'Share Tech Mono',monospace;font-size:13px;
+    letter-spacing:.08em;padding:20px 2px}
+  @media (max-width:560px){ .gentry{grid-template-columns:1fr;gap:5px} }
+
+  .modecard.rechen::before{background:var(--green)}
+  .modecard.rechen .mc-eyebrow{color:var(--green)}
+  .modecard.rechen .mc-foot .go{color:var(--green)}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="brand">
+      <svg class="roundel" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+        <circle cx="22" cy="22" r="20" stroke="#e0a02f" stroke-width="1.5"/>
+        <path d="M8 23 L36 20 L30 23 L36 26 Z M22 13 L24 21 L22 22 L20 21 Z" fill="#e0a02f"/>
+      </svg>
+      <div class="brand-txt">
+        <div class="name">AQUILA A210</div>
+        <div class="sub">AT01 &middot; ROTAX 912 S3 &middot; POH B.25</div>
+      </div>
+    </div>
+    <div class="plate">
+      JAR-VLA / EASA · GRP. NORMAL<br>
+      <span id="plate-specs">MTOW <b>750 kg</b> · V<sub>NE</sub> <b>165 kts</b> · CHT <b>135 °C</b></span><br>
+      <span class="ver">v1.0 · STAND 15.10.2026</span>
+    </div>
+  </div>
+
+  <!-- ============ HOME HUB ============ -->
+  <section id="screen-home">
+    <div class="eyebrow mono" id="eyebrow-home">A210 WISSENSSYSTEM</div>
+    <h1 class="hero">Beherrsch<br>deine<br><span class="accent" id="hero-muster">A210?</span></h1>
+    <p class="lede" id="lede-home">Vier Trainingswege — Kennwerte-Wissen, Notverfahren aus dem Kopf, Abkürzungen und angewandtes Rechnen. Alles aus dem A210-POH, jeder Punkt mit dem Warum.</p>
+    <div class="buildline mono" id="buildline"></div>
+    <div class="musterbar">
+      <span class="mb-label mono">MUSTER</span>
+      <div class="mb-toggle">
+        <button data-muster="A210" class="on">A210</button>
+        <button data-muster="A211">A211</button>
+      </div>
+    </div>
+    <div class="modecards">
+      <button class="modecard" id="mode-quiz">
+        <div class="mc-eyebrow">▸ MODUS 01</div>
+        <div class="mc-title">Wissens-Quiz</div>
+        <div class="mc-desc">Multiple-Choice zu allen Must-Know-Kennwerten: Massen, V-Speeds, Triebwerk, Propeller, Systeme. Mit Erklärung und POH-Referenz.</div>
+        <div class="mc-foot"><span id="mc-quiz-count">— Fragen</span><span class="go">→</span></div>
+      </button>
+      <button class="modecard emg" id="mode-emg">
+        <div class="mc-eyebrow">▸ MODUS 02</div>
+        <div class="mc-title">Notverfahren</div>
+        <div class="mc-desc">Die Emergency-Checklisten Schritt für Schritt beherrschen — im Lern- und im Abfrage-Modus. Triebwerk, Feuer, Systeme, Flugzustand.</div>
+        <div class="mc-foot"><span id="mc-emg-count">— Szenarien</span><span class="go">→</span></div>
+      </button>
+      <button class="modecard gloss" id="mode-gloss">
+        <div class="mc-eyebrow">▸ MODUS 03</div>
+        <div class="mc-title">Abkürzungen</div>
+        <div class="mc-desc">Nachschlagewerk aller Aquila-Abkürzungen und Begriffe — V-Speeds, Masse/Schwerpunkt, Avionik, Meteorologie. Mit Sofortsuche.</div>
+        <div class="mc-foot"><span id="mc-gloss-count">— Einträge</span><span class="go">→</span></div>
+      </button>
+      <button class="modecard rechen" id="mode-rechen">
+        <div class="mc-eyebrow">▸ MODUS 04</div>
+        <div class="mc-title">Rechen-Trainer</div>
+        <div class="mc-desc">Angewandte Flugplanung mit Zufallswerten: Überziehen in der Kurve, Gleitstrecke, Zuladung, Tank, Seitenwind, Dichtehöhe. Jede Aufgabe mit Rechenweg.</div>
+        <div class="mc-foot"><span id="mc-rechen-count">— Aufgabentypen</span><span class="go">→</span></div>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ START SCREEN ============ -->
+  <section id="screen-start" class="hidden">
+    <button class="backlink" data-home>← ZURÜCK</button>
+    <div class="eyebrow mono" id="eyebrow-start">A210 WISSENSSYSTEM</div>
+    <h1 class="hero">Kennst du<br>deine<br><span class="accent" id="hero-muster-start">A210?</span></h1>
+    <p class="lede" id="lede-start">Kein Auswendiglernen um seiner selbst willen — jeder Wert kommt mit dem Warum und der POH-Fundstelle.</p>
+
+    <div class="stats">
+      <div class="stat"><div class="val" id="stat-count">20</div><div class="lbl">FRAGEN / RUNDE</div></div>
+      <div class="stat"><div class="val" id="stat-cats">9</div><div class="lbl">KATEGORIEN</div></div>
+      <div class="stat"><div class="val stars">★★★</div><div class="lbl">MUST-KNOW</div></div>
+    </div>
+
+    <div class="cats" id="cat-list"></div>
+
+    <button class="btn btn-primary" id="btn-start">QUIZ STARTEN&nbsp;&nbsp;&rarr;</button>
+  </section>
+
+  <!-- ============ QUIZ SCREEN ============ -->
+  <section id="screen-quiz" class="quiz hidden">
+    <div class="q-head">
+      <div class="progress-row">
+        <span class="mono">FRAGE <span id="q-num">1</span> / <span id="q-total">20</span></span>
+        <span class="mono score">SCORE <b id="q-score">0</b></span>
+      </div>
+      <div class="bar"><i id="q-bar"></i></div>
+    </div>
+    <div class="q-cat mono" id="q-cat">KATEGORIE</div>
+    <div class="q-text display" id="q-text">Frage…</div>
+    <div class="options" id="q-options"></div>
+    <div id="q-explain"></div>
+    <div class="q-foot">
+      <button class="btn btn-primary hidden" id="btn-next">WEITER&nbsp;&nbsp;&rarr;</button>
+    </div>
+  </section>
+
+  <!-- ============ RESULT SCREEN ============ -->
+  <section id="screen-result" class="result hidden">
+    <div class="band mono">AUSWERTUNG · DEBRIEFING</div>
+    <div class="big"><span id="r-score">0</span><span>/<span id="r-total">20</span></span></div>
+    <div class="verdict" id="r-verdict">—</div>
+    <div class="rsub" id="r-sub"></div>
+    <div class="breakdown" id="r-breakdown"></div>
+    <div class="result-actions">
+      <button class="btn btn-primary" id="btn-again">NEUE RUNDE&nbsp;&nbsp;&rarr;</button>
+      <button class="btn btn-ghost" id="btn-home">STARTSEITE</button>
+    </div>
+  </section>
+
+  <!-- ============ EMERGENCY MENU ============ -->
+  <section id="screen-emg-menu" class="emg-wrap hidden">
+    <button class="backlink" data-home>← ZURÜCK</button>
+    <div class="emg-intro">Notverfahren</div>
+    <div class="emg-sub">Wähle ein Szenario. Im Trainer kannst du zwischen <b>Lernen</b> (volle Checkliste) und <b>Abfragen</b> (Schritt für Schritt aus dem Kopf) wechseln.</div>
+    <div id="emg-menu-body"></div>
+  </section>
+
+  <!-- ============ EMERGENCY TRAINER ============ -->
+  <section id="screen-emg" class="emg-t hidden">
+    <button class="backlink" id="emg-back">← ALLE SZENARIEN</button>
+    <div class="emg-thead">
+      <div class="emg-tgroup mono" id="emg-group">GRUPPE</div>
+      <div class="emg-ttitle" id="emg-title">Szenario</div>
+    </div>
+    <div class="emg-toggle">
+      <button id="emg-mode-learn" class="on">LERNEN</button>
+      <button id="emg-mode-drill">ABFRAGEN</button>
+    </div>
+    <div id="emg-body"></div>
+  </section>
+
+  <!-- ============ GLOSSAR ============ -->
+  <section id="screen-gloss" class="gloss-wrap hidden">
+    <button class="backlink" data-home>← ZURÜCK</button>
+    <div class="emg-intro">Abkürzungen &amp; Begriffe</div>
+    <div class="emg-sub">Alle relevanten Aquila-/Luftfahrt-Abkürzungen aus Abschnitt 1.11 des POH. Tippe zum Filtern — nach Kürzel, Begriff oder Stichwort.</div>
+    <input type="text" id="gloss-search" class="gloss-search" placeholder="Suchen … z. B. VNO, Schwerpunkt, AHRS" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <div id="gloss-body"></div>
+  </section>
+
+</div>
+
+<script>
+/* =====================================================================
+   AQUILA A210 — QUESTION BANK
+   Alle Werte gegen das A210-POH (FM-AT01-1010-100, Ausg. B.25 / B.22)
+   verifiziert. answer = korrekte Option (exakter String aus options).
+   ===================================================================== */
+const QUESTION_SETS = {
+ "A210": [
+  {
+   "cat": "Massen & Zuladung",
+   "q": "Wie hoch ist die höchstzulässige Startmasse (MTOW) der A210?",
+   "options": [
+    "500 kg",
+    "550 kg",
+    "980 kg",
+    "750 kg"
+   ],
+   "answer": "750 kg",
+   "exp": "MTOW = MLM = 750 kg. Start- und Landemasse sind identisch — es gibt keine separate, höhere Landemasse.",
+   "ref": "§2.7 Massen"
+  },
+  {
+   "cat": "Massen & Zuladung",
+   "q": "Wie hoch ist die höchstzulässige Landemasse?",
+   "options": [
+    "680 kg",
+    "700 kg",
+    "720 kg",
+    "750 kg"
+   ],
+   "answer": "750 kg",
+   "exp": "Landemasse = Startmasse = 750 kg. Anders als bei größeren Mustern gibt es keinen Landemassen-Abschlag.",
+   "ref": "§2.7 Massen"
+  },
+  {
+   "cat": "Massen & Zuladung",
+   "q": "Wie viel darf maximal im Gepäckraum verstaut werden?",
+   "options": [
+    "20 kg",
+    "30 kg",
+    "40 kg",
+    "50 kg"
+   ],
+   "answer": "40 kg",
+   "exp": "40 kg im Gepäckraum. Bei der Beladung immer zusätzlich die Schwerpunktgrenze prüfen — Gepäck wirkt weit hinter der Bezugsebene.",
+   "ref": "§2.7 Massen"
+  },
+  {
+   "cat": "Kraftstoff",
+   "q": "Wie groß ist der Gesamttankinhalt (beide Flügeltanks zusammen)?",
+   "options": [
+    "100 L",
+    "109,6 L",
+    "120 L",
+    "130 L"
+   ],
+   "answer": "120 L",
+   "exp": "2 × 60 L = 120 L Gesamtinhalt. Achtung: davon ist nicht alles ausfliegbar.",
+   "ref": "§2.1 / §7.13"
+  },
+  {
+   "cat": "Kraftstoff",
+   "q": "Wie viel Kraftstoff ist insgesamt ausfliegbar?",
+   "options": [
+    "100 L",
+    "105,6 L",
+    "109,6 L",
+    "120 L"
+   ],
+   "answer": "109,6 L",
+   "exp": "2 × 54,8 L = 109,6 L ausfliegbar. 120 L ist der Gesamtinhalt — die Differenz zu 109,6 L ist die nicht ausfliegbare Reserve.",
+   "ref": "§2.1 Betriebsmittel"
+  },
+  {
+   "cat": "Kraftstoff",
+   "q": "Wie viel Kraftstoff ist pro Tank NICHT ausfliegbar?",
+   "options": [
+    "2,6 L",
+    "5,2 L",
+    "7,5 L",
+    "10,4 L"
+   ],
+   "answer": "5,2 L",
+   "exp": "5,2 L pro Tank sind nicht ausfliegbar (10,4 L gesamt). Diese Menge nie in die Flugplanung einrechnen.",
+   "ref": "§2.1 Betriebsmittel"
+  },
+  {
+   "cat": "Kraftstoff",
+   "q": "Welche minimale Oktanzahl muss der Kraftstoff haben?",
+   "options": [
+    "91 ROZ",
+    "92 ROZ",
+    "95 ROZ",
+    "98 ROZ"
+   ],
+   "answer": "95 ROZ",
+   "exp": "Mindestens 95 ROZ — passend zur Verdichtung von 10,5:1. AVGAS führt zu kürzeren Ölwechselintervallen.",
+   "ref": "§1.8 / §2.1"
+  },
+  {
+   "cat": "Kraftstoff",
+   "q": "Welche Kraftstoffsorten sind für die A210 zugelassen?",
+   "options": [
+    "Nur AVGAS 100LL",
+    "EN228 Super, Super plus und AVGAS 100LL",
+    "Nur bleifreies Super E10",
+    "Jet A-1 / Diesel"
+   ],
+   "answer": "EN228 Super, Super plus und AVGAS 100LL",
+   "exp": "EN228 Super / Super plus und AVGAS 100LL (min. 95 ROZ). AVGAS nur bei Dampfblasen oder Not, da Blei Ventilsitze und Ölsystem belastet.",
+   "ref": "§1.8 Kraftstoff"
+  },
+  {
+   "cat": "Kraftstoff",
+   "q": "Ab welchem Kraftstoffdruck leuchtet die Warnleuchte auf?",
+   "options": [
+    "unter 0,05 bar",
+    "unter 0,15 bar (2,2 psi)",
+    "unter 0,5 bar",
+    "unter 1,0 bar"
+   ],
+   "answer": "unter 0,15 bar (2,2 psi)",
+   "exp": "Unter 0,15 bar (2,2 psi) meldet der Druckschalter zu geringen Vergaser-Zulaufdruck. Reaktion: elektrische Pumpe EIN, ggf. auf volleren Tank schalten.",
+   "ref": "§7.13 Treibstoffsystem"
+  },
+  {
+   "cat": "Öl & Schmierung",
+   "q": "Wie groß ist der Gesamt-Ölinhalt des Systems?",
+   "options": [
+    "2,0 L",
+    "2,5 L",
+    "3,0 L",
+    "3,5 L"
+   ],
+   "answer": "3,0 L",
+   "exp": "3,0 L. Der ROTAX 912 hat Trockensumpfschmierung mit separatem Öltank — deshalb vor dem Peilen den Propeller durchdrehen, bis es im Tank rauscht.",
+   "ref": "§2.1 Betriebsmittel",
+   "tip": "Der 912 hat <b>keine Ölwanne</b> — das Öl lebt in einem separaten Tank (Trockensumpf). Steht das Flugzeug, sickert Öl aus dem Tank nach unten ins Kurbelgehäuse. Drehst du den Propeller in Motordrehrichtung, fördert der Kurbelgehäusedruck (Blow-by) dieses Öl zurück in den Tank. <b>Erst wenn Luft nachströmt</b>, hörst du am offenen Tank das <b>Rauschen/Gluckern</b> — das Signal: jetzt ist alles Öl im Tank und die Peilung gültig. <b>Kein Gluckern = kein gültiger Messwert</b>: der Stab zeigt dann zu wenig, du füllst nach und <b>überfüllst</b>, sobald das Öl zurückkommt (es wird über die Entlüftung rausgedrückt, der Motor schäumt). Immer nur bei <b>kaltem Motor</b>, Zündung AUS und gesetzter Parkbremse — der Prop ist beim Drehen grundsätzlich als scharf zu behandeln."
+  },
+  {
+   "cat": "Öl & Schmierung",
+   "q": "Wie groß ist die Differenz zwischen MAX und MIN am Ölmessstab?",
+   "options": [
+    "0,25 L",
+    "0,45 L",
+    "0,6 L",
+    "1,0 L"
+   ],
+   "answer": "0,45 L",
+   "exp": "0,45 L zwischen MIN und MAX. Das ist wenig — deshalb ist die korrekte Peilprozedur (erst Öl in den Tank fördern) so wichtig, sonst misst man falsch.",
+   "ref": "§2.1 / §4 Vorflugkontrolle"
+  },
+  {
+   "cat": "Öl & Schmierung",
+   "q": "Wie hoch ist die maximale Öltemperatur (rote Linie)?",
+   "options": [
+    "120 °C",
+    "125 °C",
+    "130 °C",
+    "140 °C"
+   ],
+   "answer": "130 °C",
+   "exp": "Grüner Bogen 50–130 °C, max. 130 °C. Beim ROTAX ist die Öltemperatur die trägere, aussagekräftigere Größe für den thermischen Zustand als die CHT.",
+   "ref": "§2.4 Instrumente"
+  },
+  {
+   "cat": "Öl & Schmierung",
+   "q": "Was ist der günstige Öltemperatur-Betriebsbereich?",
+   "options": [
+    "70–90 °C",
+    "80–100 °C",
+    "90–110 °C",
+    "100–120 °C"
+   ],
+   "answer": "90–110 °C",
+   "exp": "90–110 °C. Zu kaltes Öl ist zäh (schlechte Schmierung + schlechter Wärmetransport) — das ist das eigentliche Problem, nicht die Temperatur an sich.",
+   "ref": "§2.4 Instrumente"
+  },
+  {
+   "cat": "Kühlung & Kühlerabdeckung",
+   "q": "Ab welcher Außentemperatur ist die Kühlerabdeckung zu ENTFERNEN?",
+   "options": [
+    "oberhalb 5 °C",
+    "oberhalb 10 °C",
+    "oberhalb 15 °C",
+    "oberhalb 20 °C"
+   ],
+   "answer": "oberhalb 15 °C",
+   "exp": "Placard: Kühlerabdeckung oberhalb 15 °C (59 °F) entfernen. Anders als beim AT01-100B hat die A210 klare Placard-Schwellen.",
+   "ref": "Placard / §2 Kennzeichnung"
+  },
+  {
+   "cat": "Kühlung & Kühlerabdeckung",
+   "q": "Ab welcher Außentemperatur ist die Kühlerabdeckung zu INSTALLIEREN?",
+   "options": [
+    "unterhalb 0 °C",
+    "unterhalb 5 °C",
+    "unterhalb 10 °C",
+    "unterhalb 15 °C"
+   ],
+   "answer": "unterhalb 5 °C",
+   "exp": "Placard: unterhalb 5 °C (41 °F) installieren. Zwischen 5 °C und 15 °C ist es eine Ermessensfrage / Betreiber-SOP.",
+   "ref": "Placard / §2 Kennzeichnung"
+  },
+  {
+   "cat": "Kühlung & Kühlerabdeckung",
+   "q": "Wie hoch ist die maximale Zylinderkopftemperatur (CHT)?",
+   "options": [
+    "120 °C",
+    "130 °C",
+    "135 °C",
+    "150 °C"
+   ],
+   "answer": "135 °C",
+   "exp": "Max. CHT = 135 °C (rote Linie). Beim 912 S3 sind die Köpfe flüssigkeitsgekühlt — die CHT reagiert schneller als die Öltemperatur.",
+   "ref": "§2.4 Instrumente"
+  },
+  {
+   "cat": "Kühlung & Kühlerabdeckung",
+   "q": "Wie viel Kühlmittel fasst das System (min/max)?",
+   "options": [
+    "1,5 / 2,0 L",
+    "2,0 / 2,4 L",
+    "2,4 / 2,5 L",
+    "3,0 / 3,5 L"
+   ],
+   "answer": "2,4 / 2,5 L",
+   "exp": "Kühlmittelinhalt min. 2,4 L / max. 2,5 L; zusätzlich Überlaufgefäß 0,1–0,2 L. Nur freigegebenes Kühlmittel (z. B. EVANS NPG+) verwenden.",
+   "ref": "§2.1 Betriebsmittel"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Wie hoch ist VNE (nicht zu überschreitende Geschwindigkeit)?",
+   "options": [
+    "160 kt",
+    "163 kt",
+    "165 kt",
+    "170 kt"
+   ],
+   "answer": "165 kt",
+   "exp": "VNE = 165 kt IAS, rote Linie am Fahrtmesser. Darf in keiner Betriebsart überschritten werden.",
+   "ref": "§2.2 Geschwindigkeitsgrenzen"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Wie hoch ist VNO (zul. Höchstgeschwindigkeit im Reiseflug)?",
+   "options": [
+    "120 kt",
+    "125 kt",
+    "130 kt",
+    "140 kt"
+   ],
+   "answer": "130 kt",
+   "exp": "VNO = 130 kt = Beginn des gelben Bogens. Darüber (130–165 kt) nur in ruhiger Luft und mit Vorsicht.",
+   "ref": "§2.2 / §2.3"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Wie hoch ist VFE (Höchstgeschw. mit ausgefahrenen Klappen)?",
+   "options": [
+    "80 kt",
+    "85 kt",
+    "90 kt",
+    "95 kt"
+   ],
+   "answer": "90 kt",
+   "exp": "VFE = 90 kt = oberes Ende des weißen Bogens. Das POH kennt nur einen VFE-Wert, nicht getrennt für Start-/Landeklappe.",
+   "ref": "§2.2 / §2.3"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Wie hoch ist VA (Manövergeschwindigkeit)?",
+   "options": [
+    "100 kt",
+    "108 kt",
+    "112 kt",
+    "120 kt"
+   ],
+   "answer": "112 kt",
+   "exp": "VA = 112 kt. Oberhalb keine abrupten, vollen Ruderausschläge — sonst Überlastungsgefahr. VA sinkt bei geringerer Masse.",
+   "ref": "§2.2 Geschwindigkeitsgrenzen"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Welchen Bereich umfasst der weiße Bogen am Fahrtmesser?",
+   "options": [
+    "40–85 kt",
+    "44–90 kt",
+    "44–130 kt",
+    "48–95 kt"
+   ],
+   "answer": "44–90 kt",
+   "exp": "Weißer Bogen 44–90 kt = zulässiger Bereich mit ausgefahrenen Landeklappen. Untergrenze 44 = Vs0-Markierung, Obergrenze 90 = VFE.",
+   "ref": "§2.3 Fahrtmessermarkierungen"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Welchen Bereich umfasst der grüne Bogen?",
+   "options": [
+    "44–130 kt",
+    "48–130 kt",
+    "52–130 kt",
+    "52–165 kt"
+   ],
+   "answer": "52–130 kt",
+   "exp": "Grüner Bogen 52–130 kt = normaler Betriebsbereich. Untergrenze 52 = Überziehmarkierung sauber (Reise), Obergrenze 130 = VNO.",
+   "ref": "§2.3 Fahrtmessermarkierungen"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Welchen Bereich umfasst der gelbe Bogen (Vorsichtsbereich)?",
+   "options": [
+    "125–165 kt",
+    "130–160 kt",
+    "130–165 kt",
+    "130–170 kt"
+   ],
+   "answer": "130–165 kt",
+   "exp": "Gelber Bogen 130–165 kt: nur in ruhiger Luft und mit äußerster Vorsicht. Bei 165 kt die rote Linie (VNE).",
+   "ref": "§2.3 Fahrtmessermarkierungen"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Welche Geschwindigkeit fliegt man für die beste Gleitstrecke bei Triebwerksausfall?",
+   "options": [
+    "70 kt",
+    "75 kt",
+    "78 kt",
+    "82 kt"
+   ],
+   "answer": "78 kt",
+   "exp": "78 kt IAS, Klappen ein / Reisestellung. Das ist die Geschwindigkeit für den flachsten Gleitwinkel.",
+   "ref": "§3.8 Gleitflug"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Wie groß ist die sichere Gleitzahl?",
+   "options": [
+    "10",
+    "12",
+    "14",
+    "16"
+   ],
+   "answer": "14",
+   "exp": "Sichere Gleitzahl 14: 1000 ft Höhe ≈ 4,0 km Strecke (bei Windstille). Faustregel für die Feldwahl im Ernstfall.",
+   "ref": "§3.8 Gleitflug"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Wie hoch ist Vy (Geschwindigkeit besten Steigens) in Meereshöhe?",
+   "options": [
+    "60 kt",
+    "63 kt",
+    "65 kt",
+    "70 kt"
+   ],
+   "answer": "65 kt",
+   "exp": "Vy = 65 KIAS bis 5000 ft (Klappen Reisestellung). Darüber abnehmend: 63 bis 10.000 ft, 61 bis 13.000 ft.",
+   "ref": "§5 Flugleistungen"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Wie hoch ist Vx (bester Steigwinkel) in Meereshöhe?",
+   "options": [
+    "48 kt",
+    "52 kt",
+    "57 kt",
+    "60 kt"
+   ],
+   "answer": "52 kt",
+   "exp": "Vx = 52 KIAS (Klappen Startstellung). Vx < Vy — steilster Winkel zum Hindernis, nicht schnellstes Steigen.",
+   "ref": "§5 Flugleistungen"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Welche Anfluggeschwindigkeit gilt für die Normallandung (Landeklappen)?",
+   "options": [
+    "55 kt",
+    "60 kt",
+    "65 kt",
+    "70 kt"
+   ],
+   "answer": "60 kt",
+   "exp": "60 kt in Landekonfiguration. Auch die Steiggeschwindigkeit beim Durchstarten ist 60 kt.",
+   "ref": "§4 Normalverfahren"
+  },
+  {
+   "cat": "Überziehen",
+   "q": "Bei welcher IAS liegt die Überziehmarkierung in Landekonfiguration (weißer Bogen unten)?",
+   "options": [
+    "40 kt",
+    "42 kt",
+    "44 kt",
+    "48 kt"
+   ],
+   "answer": "44 kt",
+   "exp": "Untere Grenze weißer Bogen = 44 kt. Die tatsächliche Vs (Landung) liegt lt. Tab. 5.2.2 bei 39 KIAS — der Bogenwert ist der konservative „sichere“ Wert.",
+   "ref": "§2.3 / Tab. 5.2.2"
+  },
+  {
+   "cat": "Überziehen",
+   "q": "Bei welcher IAS liegt die Überziehmarkierung im sauberen Reiseflug (grüner Bogen unten)?",
+   "options": [
+    "44 kt",
+    "48 kt",
+    "50 kt",
+    "52 kt"
+   ],
+   "answer": "52 kt",
+   "exp": "Untere Grenze grüner Bogen = 52 kt (sauber). Mit Klappen stallt man LANGSAMER (44 kt), nicht schneller.",
+   "ref": "§2.3 / Tab. 5.2.2"
+  },
+  {
+   "cat": "Überziehen",
+   "q": "Warum liegt die Überziehgeschwindigkeit mit ausgefahrenen Klappen NIEDRIGER als im sauberen Flug?",
+   "options": [
+    "Weil die Klappen den maximalen Auftriebsbeiwert erhöhen",
+    "Weil weniger Widerstand entsteht",
+    "Weil das Flugzeug leichter wird",
+    "Weil der Anstellwinkel kleiner wird"
+   ],
+   "answer": "Weil die Klappen den maximalen Auftriebsbeiwert erhöhen",
+   "exp": "Klappen erhöhen den maximalen Auftriebsbeiwert. Bei gleichem Gewicht reicht dann eine geringere Geschwindigkeit für den nötigen Auftrieb → Vs sinkt (44 vs. 52 kt).",
+   "ref": "Aerodynamik / Tab. 5.2.2"
+  },
+  {
+   "cat": "Überziehen",
+   "q": "Unter welchen Bedingungen wurden die Überziehgeschwindigkeiten der Tab. 5.2.2 ermittelt?",
+   "options": [
+    "600 kg, CG hinten, Vollgas",
+    "750 kg, CG 31% MAC, Leerlauf",
+    "750 kg, CG hinten, Reiseleistung",
+    "MTOW, CG 40% MAC, Leerlauf"
+   ],
+   "answer": "750 kg, CG 31% MAC, Leerlauf",
+   "exp": "Ermittelt bei 750 kg, CG = 31% MAC (vorderste Lage), Leerlauf. Bei hinterem Schwerpunkt oder mit Leistung ändert sich das Überziehverhalten.",
+   "ref": "Tab. 5.2.2"
+  },
+  {
+   "cat": "Triebwerk",
+   "q": "Welcher Motor treibt die A210 an?",
+   "options": [
+    "ROTAX 912 UL",
+    "ROTAX 912 iS",
+    "ROTAX 912 S3",
+    "ROTAX 914"
+   ],
+   "answer": "ROTAX 912 S3",
+   "exp": "ROTAX 912 S3 — Vierzylinder-Viertakt-Boxer mit luftgekühlten Zylindern und flüssigkeitsgekühlten Zylinderköpfen (Hybridkühlung).",
+   "ref": "§2.1 Triebwerk"
+  },
+  {
+   "cat": "Triebwerk",
+   "q": "Wie hoch ist die Start-/Dauerleistung des Triebwerks?",
+   "options": [
+    "59 kW",
+    "64 kW",
+    "69 kW",
+    "74 kW"
+   ],
+   "answer": "69 kW",
+   "exp": "69,0 kW (≈ 92,5 PS) bei einer Propellerdrehzahl von 2263 U/min.",
+   "ref": "§2.1 Triebwerk"
+  },
+  {
+   "cat": "Triebwerk",
+   "q": "Welche Zylinder-Komponente ist beim 912 S3 flüssigkeitsgekühlt?",
+   "options": [
+    "Die gesamten Zylinder",
+    "Nur die Zylinderköpfe",
+    "Nur die Kolben",
+    "Gar nichts, reine Luftkühlung"
+   ],
+   "answer": "Nur die Zylinderköpfe",
+   "exp": "Hybridkühlung: Zylinder luftgekühlt, Zylinderköpfe flüssigkeitsgekühlt. Deshalb hat der Motor CHT-, Öltemperatur- und Kühlmittel-Überwachung.",
+   "ref": "§2.1 Triebwerk"
+  },
+  {
+   "cat": "Triebwerk",
+   "q": "Wie hoch ist die maximal zulässige Dauerdrehzahl (Propeller, rote Linie)?",
+   "options": [
+    "2160 U/min",
+    "2200 U/min",
+    "2260 U/min",
+    "2400 U/min"
+   ],
+   "answer": "2260 U/min",
+   "exp": "2260 U/min max. Start- und Dauerdrehzahl. Der Drehzahlmesser zeigt die PROPELLER-Drehzahl (nicht die Motordrehzahl) — Getriebeuntersetzung.",
+   "ref": "§2.4 Instrumente"
+  },
+  {
+   "cat": "Triebwerk",
+   "q": "Womit wird der ROTAX 912 S3 gezündet?",
+   "options": [
+    "Klassische Magnetzündung mit rotierenden Magneten",
+    "Kontaktlose Magnet-Kondensator-Doppelzündanlage (Doppel-CDI)",
+    "Einfache Batteriezündung",
+    "Kompressionszündung ohne Kerzen"
+   ],
+   "answer": "Kontaktlose Magnet-Kondensator-Doppelzündanlage (Doppel-CDI)",
+   "exp": "Zwei unabhängige elektronische Zündkreise (Doppel-CDI). Der „Magnetcheck“ prüft je einen Kreis — ein zu KLEINER Drehzahlabfall ist genauso verdächtig wie ein zu großer.",
+   "ref": "§7.9 Triebwerk"
+  },
+  {
+   "cat": "Triebwerk",
+   "q": "Ab welcher Außentemperatur muss der Motor vor dem Start vorgewärmt werden?",
+   "options": [
+    "unter -10 °C",
+    "unter -15 °C",
+    "unter -20 °C",
+    "unter -25 °C"
+   ],
+   "answer": "unter -25 °C",
+   "exp": "Unter -25 °C ist Vorwärmen vorgeschrieben. Bei unter -10 °C wird zusätzlich eine externe Starthilfe empfohlen.",
+   "ref": "§2.4 / §7"
+  },
+  {
+   "cat": "Propeller",
+   "q": "Welcher Propeller ist an der A210 verbaut?",
+   "options": [
+    "Fester Zweiblatt-Holzpropeller",
+    "Zweiblatt-Verstellpropeller mit Constant-Speed-Regelung",
+    "Dreiblatt-Festpropeller",
+    "Verstellpropeller mit Segelstellung"
+   ],
+   "answer": "Zweiblatt-Verstellpropeller mit Constant-Speed-Regelung",
+   "exp": "mt-Propeller MTV-21, Zweiblatt, hydraulische Constant-Speed-Regelung — hält die vorgewählte Drehzahl bei wechselnder Leistung/Geschwindigkeit konstant.",
+   "ref": "§1.7 Propeller"
+  },
+  {
+   "cat": "Propeller",
+   "q": "Wie stellen sich die Propellerblätter bei Ausfall des Öldruckes?",
+   "options": [
+    "Auf größte Steigung",
+    "Auf kleinste Steigung",
+    "In Segelstellung",
+    "Sie bleiben in der letzten Stellung fixiert"
+   ],
+   "answer": "Auf kleinste Steigung",
+   "exp": "Bei Öldruckausfall gehen die Blätter auf kleinste Steigung → Weiterflug mit voller Leistung bis zur max. Drehzahl möglich. Federkraft/Anschlag übernimmt, wenn der Öldruck fehlt.",
+   "ref": "§7 / §3 Notverfahren",
+   "tip": "Warum kleinste Steigung und keine Segelstellung? Die Blattverstellung arbeitet gegen eine <b>Feder</b>: Öldruck dreht die Blätter auf große Steigung, die Federkraft auf kleine. <b>Fällt der Öldruck aus</b>, gewinnt die Feder → kleinste Steigung = größte Drehzahl. Das ist die <b>fail-safe</b>-Logik: Du behältst volle Leistung für Start/Durchstart, statt mit einem stehengebliebenen Grobblatt kaum noch Schub zu haben. Der Preis: <b>keine Segelstellung</b> — bei echtem Motorausfall bleibt das windmillende Blatt auf kleiner Steigung und erzeugt viel Widerstand. Deshalb ist die sichere Gleitzahl „nur“ 14, und saubere Gleitfluggeschwindigkeit (78 kt) + frühe Feldwahl zählen doppelt."
+  },
+  {
+   "cat": "Propeller",
+   "q": "Besitzt der Propeller der A210 eine Segelstellung?",
+   "options": [
+    "Ja, elektrisch schaltbar",
+    "Ja, hydraulisch",
+    "Nein",
+    "Nur bei stehendem Motor"
+   ],
+   "answer": "Nein",
+   "exp": "Keine Segelstellung. Bei Motorausfall erzeugt der (windmillende) Propeller Widerstand — das ist mit ein Grund, warum die sichere Gleitzahl „nur“ 14 beträgt.",
+   "ref": "§7 Propeller"
+  },
+  {
+   "cat": "Schwerpunkt & Last",
+   "q": "Wo liegt die vorderste Flugmassen-Schwerpunktgrenze (hinter der Bezugsebene)?",
+   "options": [
+    "400 mm",
+    "427 mm",
+    "462 mm",
+    "523 mm"
+   ],
+   "answer": "427 mm",
+   "exp": "Vorderste Lage: 31% MAC = 427 mm hinter BE. Die Bezugsebene liegt an der Flügelvorderkante an der Trennstelle zum Rumpf.",
+   "ref": "§2.8 Schwerpunkt"
+  },
+  {
+   "cat": "Schwerpunkt & Last",
+   "q": "Wo liegt die hinterste Flugmassen-Schwerpunktgrenze?",
+   "options": [
+    "500 mm",
+    "512 mm",
+    "523 mm",
+    "550 mm"
+   ],
+   "answer": "523 mm",
+   "exp": "Hinterste Lage: 40% MAC = 523 mm hinter BE. Ein hinterer Schwerpunkt verringert die Längsstabilität und die Überziehmarge.",
+   "ref": "§2.8 Schwerpunkt"
+  },
+  {
+   "cat": "Schwerpunkt & Last",
+   "q": "Wie hoch ist das maximale positive Lastvielfache bei VA (ohne Klappen)?",
+   "options": [
+    "2,0 g",
+    "3,5 g",
+    "4,0 g",
+    "4,4 g"
+   ],
+   "answer": "4,0 g",
+   "exp": "+4,0 g / -2,0 g bei VA und bei VNE. Absichtliche negative Belastung ist generell nicht gestattet.",
+   "ref": "§2.10 Manöverlastvielfache"
+  },
+  {
+   "cat": "Schwerpunkt & Last",
+   "q": "Wie hoch ist das maximale positive Lastvielfache mit ausgefahrenen Landeklappen?",
+   "options": [
+    "1,5 g",
+    "2,0 g",
+    "3,0 g",
+    "4,0 g"
+   ],
+   "answer": "2,0 g",
+   "exp": "Mit Klappen nur +2,0 g / 0 g. Deshalb ist VFE auch eine Struktur- und nicht nur eine Auftriebsgrenze.",
+   "ref": "§2.10 Manöverlastvielfache"
+  },
+  {
+   "cat": "Schwerpunkt & Last",
+   "q": "Welche maximale Schräglage ist im Normalbetrieb zulässig?",
+   "options": [
+    "30°",
+    "45°",
+    "60°",
+    "90°"
+   ],
+   "answer": "60°",
+   "exp": "Steilkurven bis < 60° Schräglage. Bei 60° verdoppelt sich das Lastvielfache (2 g) und Vs steigt um ~41%. Kunstflug ist nicht zugelassen.",
+   "ref": "§2.9 Manöver"
+  },
+  {
+   "cat": "Systeme & Konfiguration",
+   "q": "Welchen Klappenwinkel hat die Landestellung?",
+   "options": [
+    "17°",
+    "25°",
+    "35°",
+    "40°"
+   ],
+   "answer": "35°",
+   "exp": "Reise 0° (rot), Start 17° (gelb), Landung 35° (grün) — die Farben entsprechen den Markierungen der Stellungsanzeige.",
+   "ref": "§7 / Placard"
+  },
+  {
+   "cat": "Systeme & Konfiguration",
+   "q": "Welcher Klappenwinkel entspricht der Startstellung?",
+   "options": [
+    "0°",
+    "17°",
+    "25°",
+    "35°"
+   ],
+   "answer": "17°",
+   "exp": "Startstellung 17° (gelbe Markierung). Sie liefert zusätzlichen Auftrieb bei noch moderatem Widerstand für Start und Steigflug.",
+   "ref": "§7 / Placard"
+  },
+  {
+   "cat": "Systeme & Konfiguration",
+   "q": "In welchem Abstand sollte zwischen den Tanks umgeschaltet werden?",
+   "options": [
+    "alle 15 min",
+    "alle 30 min",
+    "alle 60 min",
+    "erst wenn ein Tank leer ist"
+   ],
+   "answer": "alle 60 min",
+   "exp": "Placard: „ALLE 60 MIN“. Das hält die Füllstände ausgeglichen und damit den Schwerpunkt/Trimmzustand symmetrisch.",
+   "ref": "Placard / §7.13"
+  },
+  {
+   "cat": "Systeme & Konfiguration",
+   "q": "Wann muss die elektrische Kraftstoffpumpe eingeschaltet sein?",
+   "options": [
+    "Nur im Reiseflug",
+    "Bei Start und Landung",
+    "Nur bei Motorausfall",
+    "Dauerhaft im gesamten Flug"
+   ],
+   "answer": "Bei Start und Landung",
+   "exp": "Bei Start, Landung, in kritischen Phasen und bei zu geringem Druck. Die mechanische Pumpe ist primär, die elektrische ist die Redundanz.",
+   "ref": "§7.13 Treibstoffsystem"
+  },
+  {
+   "cat": "Systeme & Konfiguration",
+   "q": "Was bewirkt die eingeschaltete Vergaservorwärmung neben dem Enteisen?",
+   "options": [
+    "Sie erhöht die Leistung",
+    "Sie mindert die Motorleistung",
+    "Sie hat keinen Leistungseinfluss",
+    "Sie erhöht den Ladedruck"
+   ],
+   "answer": "Sie mindert die Motorleistung",
+   "exp": "Warme, dünnere Luft → weniger Leistung. Ausnahme Durchstarten: dort Vollgas und Vorwärmung AUS, um keine Leistung zu verschenken.",
+   "ref": "§7.12.5 Vergaservorwärmung"
+  },
+  {
+   "cat": "Notverfahren",
+   "q": "Der Öldruck fällt unter den grünen Bereich. Was entscheidet über die Dringlichkeit?",
+   "options": [
+    "Die Flughöhe",
+    "Die Öltemperatur",
+    "Der Ladedruck",
+    "Die Propellerdrehzahl"
+   ],
+   "answer": "Die Öltemperatur",
+   "exp": "Öldruck fällt + Temp NORMAL → Landung auf nächstem Flugplatz. Öldruck fällt + Temp STEIGEND → Leistung reduzieren, Sicherheitslandung, Motorausfall droht unmittelbar. Die Temperatur trennt kontrolliert von akut.",
+   "ref": "§3.3 Triebwerkstörungen",
+   "tip": "Warum ausgerechnet die Öltemperatur entscheidet: Öl hat zwei Jobs — <b>schmieren</b> und <b>Wärme abführen</b>. Ein Druckabfall allein kann harmlos sein (Sensor, Leitung, Anzeige) oder echt (Ölverlust). Die Temperatur verrät, welcher Fall vorliegt. <b>Bleibt sie normal</b>, zirkuliert noch Öl und kühlt — die Lager laufen, du hast Zeit (Landung auf nächstem Platz). <b>Steigt sie</b>, trägt das Öl keine Wärme mehr ab → es ist tatsächlich zu wenig da, die Lager laufen trocken und heiß und fressen in Kürze → <b>Motorausfall steht unmittelbar bevor</b>: Leistung sofort auf das Nötigste reduzieren und Sicherheitslandung. Kurz: Der Druck sagt „etwas stimmt nicht“, die Temperatur sagt „wie dringend“."
+  },
+  {
+   "cat": "Notverfahren",
+   "q": "Erste Maßnahme bei Abfall des Kraftstoffdrucks?",
+   "options": [
+    "Motor abstellen",
+    "Elektrische Kraftstoffpumpe EIN",
+    "Vollgas geben",
+    "Brandhahn OFF"
+   ],
+   "answer": "Elektrische Kraftstoffpumpe EIN",
+   "exp": "Elektrische Pumpe EIN, ggf. auf volleren Tank schalten. Nach dem Umschalten dauert es ca. 8 sec, bis wieder voller Druck anliegt.",
+   "ref": "§3.3 Kraftstoffdruckabfall"
+  },
+  {
+   "cat": "Notverfahren",
+   "q": "Ab welcher Geschwindigkeit dreht sich der Propeller bei abgestelltem Motor von selbst (Windmilling)?",
+   "options": [
+    "> 40 kts",
+    "> 60 kts",
+    "> 78 kts",
+    "> 90 kts"
+   ],
+   "answer": "> 60 kts",
+   "exp": "Über 60 kts windmillt der Propeller. Das ist die Grundlage für den Wiederanlassversuch „mit drehendem Propeller“.",
+   "ref": "§3 Wiederanlassen"
+  },
+  {
+   "cat": "Notverfahren",
+   "q": "Auf welche Geschwindigkeit drückt man an, um den Motor per Windmilling zu starten?",
+   "options": [
+    "78 kts",
+    "90 kts",
+    "110 kts",
+    "120 kts"
+   ],
+   "answer": "120 kts",
+   "exp": "Andrücken auf ca. 120 kts bringt den stehenden Propeller zum Drehen. Der dabei entstehende Höhenverlust beträgt ca. 1000 ft / 300 m.",
+   "ref": "§3 Wiederanlassen"
+  },
+  {
+   "cat": "Notverfahren",
+   "q": "Welche Anfluggeschwindigkeit gilt bei einer Notlandung mit Landeklappen in Landestellung?",
+   "options": [
+    "55 kts",
+    "60 kts",
+    "65 kts",
+    "70 kts"
+   ],
+   "answer": "60 kts",
+   "exp": "Landeklappen Landung 60 kts, Startstellung 65 kts, Reisestellung 70 kts. Weniger Klappe → höhere Anfluggeschwindigkeit.",
+   "ref": "§3.4 Notlandung"
+  },
+  {
+   "cat": "Betriebsgrenzen",
+   "q": "Wie hoch ist die maximal nachgewiesene Seitenwindkomponente?",
+   "options": [
+    "10 kt",
+    "12 kt",
+    "15 kt",
+    "20 kt"
+   ],
+   "answer": "15 kt",
+   "exp": "15 kt / 27 km/h nachgewiesen. Ein demonstrierter, kein absoluter Grenzwert — aber ein Start bei mehr kann unbeherrschbar werden.",
+   "ref": "§2.14 Seitenwind"
+  },
+  {
+   "cat": "Betriebsgrenzen",
+   "q": "Wie hoch ist der Reifendruck am Hauptrad?",
+   "options": [
+    "2,0 bar",
+    "2,2 bar",
+    "2,5 bar",
+    "3,0 bar"
+   ],
+   "answer": "2,5 bar",
+   "exp": "Hauptrad 2,5 bar, Bugrad 2,0 bar. Reifendruck und Rutschmarkierung gehören in jede tägliche Kontrolle.",
+   "ref": "§2 / §7 Fahrwerk"
+  },
+  {
+   "cat": "Betriebsgrenzen",
+   "q": "In welche Lufttüchtigkeitsgruppe ist die A210 eingestuft?",
+   "options": [
+    "Utility",
+    "Aerobatic",
+    "Normal",
+    "Commuter"
+   ],
+   "answer": "Normal",
+   "exp": "Gruppe NORMAL (JAR-VLA / EASA). Das bedeutet u. a.: kein Kunstflug, Schräglage < 60°, +4,0/-2,0 g.",
+   "ref": "§1 / §2 Betriebsgrenzen"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Bei welcher Drehzahl wird die Zündkreisprüfung (Magnet-Check) durchgeführt?",
+   "options": [
+    "1500 U/min",
+    "1700 U/min",
+    "2000 U/min",
+    "2260 U/min"
+   ],
+   "answer": "1700 U/min",
+   "exp": "Bei 1700 U/min L-BOTH-R-BOTH durchschalten — dieselbe Drehzahl gilt auch für die Propellerprobe.",
+   "ref": "§4.5.5 Vor dem Start"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Wie groß darf der Drehzahlabfall beim Abschalten eines Zündkreises höchstens sein?",
+   "options": [
+    "50 U/min",
+    "120 U/min",
+    "200 U/min",
+    "300 U/min"
+   ],
+   "answer": "120 U/min",
+   "exp": "Max. 120 U/min. Genauso wichtig: ein Abfall muss überhaupt spürbar sein — KEIN Abfall deutet auf einen ständig heißen Zündkreis hin.",
+   "ref": "§4.5.5 Vor dem Start",
+   "tip": "Ein <b>fehlender</b> Drehzahlabfall ist gefährlicher als ein zu großer. Er bedeutet meist, dass sich der abgewählte Zündkreis gar nicht abschalten lässt (unterbrochene Masseleitung oder defekter Zündschalter) — ein <b>heißer Zündkreis</b> („hot mag“). Der Kreis zündet weiter, auch in Stellung OFF. Folgen: Der <b>Propeller ist ab sofort als scharf zu behandeln</b>, auch bei Zündung OFF — Gefahr beim Durchdrehen zur Ölkontrolle und beim Abstellen. Der Motor lässt sich evtl. nicht mehr über den Zündschalter stoppen (nur noch über Brandhahn OFF / Aushungern). Und die Redundanz der beiden Kreise ist nicht mehr nachgewiesen. <b>Start abbrechen, nicht fliegen</b>, bis der Fehler behoben ist; den Propeller bis dahin strikt als lebensgefährlich behandeln."
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Wie groß darf die Differenz des Drehzahlabfalls zwischen linkem und rechtem Zündkreis höchstens sein?",
+   "options": [
+    "25 U/min",
+    "50 U/min",
+    "100 U/min",
+    "120 U/min"
+   ],
+   "answer": "50 U/min",
+   "exp": "Max. 50 U/min Differenz zwischen L und R. Eine große Differenz weist auf ein Problem in einem der beiden Kreise hin.",
+   "ref": "§4.5.5 Vor dem Start"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Beim Durchschalten des Propellers zwischen Start- und Reisestellung — welcher Drehzahlabfall wird geprüft?",
+   "options": [
+    "100 ± 50 U/min",
+    "200 ± 50 U/min",
+    "300 ± 50 U/min",
+    "400 ± 50 U/min"
+   ],
+   "answer": "200 ± 50 U/min",
+   "exp": "3× zwischen START- und REISE-Stellung schalten, Abfall 200 ± 50 U/min — das bestätigt, dass die Verstellung Öl annimmt. Danach STARTSTELLUNG.",
+   "ref": "§4.5.5 Vor dem Start"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Welcher Drehzahlabfall bestätigt beim Run-up die Funktion der Vergaservorwärmung?",
+   "options": [
+    "5–15 U/min",
+    "20–50 U/min",
+    "60–100 U/min",
+    "100–150 U/min"
+   ],
+   "answer": "20–50 U/min",
+   "exp": "20–50 U/min. Warme Luft ist dünner → weniger Leistung. Kein Abfall = die Vorwärmung wirkt nicht.",
+   "ref": "§4.5.5 Vor dem Start"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Bis wann muss der Öldruck nach dem Anlassen im grünen Bereich sein?",
+   "options": [
+    "sofort, sonst Startabbruch",
+    "spätestens nach 10 sec — sonst Motor abstellen",
+    "nach 30 sec",
+    "nach 60 sec"
+   ],
+   "answer": "spätestens nach 10 sec — sonst Motor abstellen",
+   "exp": "Spätestens 10 sec nach dem Anlassen im grünen Bereich; bei unter 1,5 bar muss der Motor unmittelbar abgestellt werden.",
+   "ref": "§4.5.2 Anlassen"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Wie lange darf der Anlasser maximal am Stück betätigt werden?",
+   "options": [
+    "5 sec",
+    "10 sec",
+    "20 sec",
+    "30 sec"
+   ],
+   "answer": "10 sec",
+   "exp": "Max. 10 sec, danach mindestens 2 min Abkühlung. Zum Anlassen braucht der Motor min. 100 U/min am Propeller.",
+   "ref": "§4.5.2 Anlassen"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Bis zu welcher Öltemperatur wird warmgelaufen, bevor die volle Startleistung gegeben wird?",
+   "options": [
+    "40 °C",
+    "50 °C",
+    "60 °C",
+    "90 °C"
+   ],
+   "answer": "50 °C",
+   "exp": "Warmlauf zuerst 2 min bei 820 U/min, dann bei 1030 U/min bis 50 °C Öltemperatur (beim Rollen möglich). 50 °C ist zugleich die untere grüne Marke.",
+   "ref": "§4.5.3 Vor dem Rollen"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Bei welcher Geschwindigkeit wird beim Start das Bugrad abgehoben (Rotation)?",
+   "options": [
+    "44 kts",
+    "50 kts",
+    "57 kts",
+    "65 kts"
+   ],
+   "answer": "50 kts",
+   "exp": "Bugrad abheben bei 50 kts (VIAS), anschließend Steigflug mit 65 kts.",
+   "ref": "§4.5.6 Start"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Welche Steigfluggeschwindigkeit gilt beim normalen Start nach dem Abheben?",
+   "options": [
+    "57 kts",
+    "60 kts",
+    "65 kts",
+    "70 kts"
+   ],
+   "answer": "65 kts",
+   "exp": "65 kts normal. Nur für die kürzeste Strecke über ein 15-m-Hindernis: 57 kts — steiler, aber langsamer.",
+   "ref": "§4.5.6 Start"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Was ist beim Durchstarten der ERSTE Schritt?",
+   "options": [
+    "Leistungshebel VOLLGAS",
+    "Propellerverstellhebel STARTSTELLUNG",
+    "Landeklappen einfahren",
+    "Vergaservorwärmung EIN"
+   ],
+   "answer": "Propellerverstellhebel STARTSTELLUNG",
+   "exp": "Erst Prop STARTSTELLUNG, dann Vollgas, Vergaservorwärmung AUS, Klappen START, 65 kts. Prop-vor-Gas schützt den Motor.",
+   "ref": "§4.5.11 Durchstarten"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Warum sollte Vollgas bei eingeschalteter Vergaservorwärmung vermieden werden?",
+   "options": [
+    "Um Triebwerkschäden vorzubeugen",
+    "Wegen Überziehgefahr",
+    "Wegen zu hohem Öldruck",
+    "Es ist unbedenklich"
+   ],
+   "answer": "Um Triebwerkschäden vorzubeugen",
+   "exp": "Warme Ansaugluft plus Vollgas belastet den Motor. Deshalb beim Durchstarten die Vorwärmung AUS.",
+   "ref": "§4.5.11 Durchstarten",
+   "tip": "Warme Luft ist <b>dünner</b>: Mit gezogener Vergaservorwärmung bekommt der Motor weniger Sauerstoff pro Hub → weniger Leistung und ein fetteres, heißeres Gemisch. Bei <b>Vollgas</b> addiert sich das zu höheren Brennraumtemperaturen und Klopf-/Detonationsneigung — das POH warnt ausdrücklich vor Triebwerkschäden. Beim 912 kannst du das nicht per Gemischhebel ausgleichen (die Vergaser regeln automatisch). Deshalb: Vorwärmung ist ein <b>Enteisungs- und Vorbeugewerkzeug bei Teillast</b>, nicht für Volllast. Beim <b>Durchstarten</b> gehört sie zuerst AUS — dort willst du jedes Watt und keine Zusatzlast für den Motor."
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Wie erhöht man die Motorleistung korrekt?",
+   "options": [
+    "zuerst Drehzahl, dann Ladedruck",
+    "zuerst Ladedruck, dann Drehzahl",
+    "beides gleichzeitig",
+    "nur den Ladedruck"
+   ],
+   "answer": "zuerst Drehzahl, dann Ladedruck",
+   "exp": "Erhöhen: zuerst Drehzahl, dann Ladedruck. Senken umgekehrt. So vermeidet man hohen Ladedruck bei niedriger Drehzahl.",
+   "ref": "§4.5.6 Start"
+  },
+  {
+   "cat": "Überziehen",
+   "q": "Um wie viel steigt die Überziehgeschwindigkeit in einer 60°-Steilkurve?",
+   "options": [
+    "+15 %",
+    "+25 %",
+    "+41 %",
+    "+100 %"
+   ],
+   "answer": "+41 %",
+   "exp": "Vs steigt mit der Wurzel des Lastvielfachen. Bei 60° Schräglage ist n = 2 → √2 ≈ 1,41, also +41 %.",
+   "ref": "§2.9 / Aerodynamik"
+  },
+  {
+   "cat": "Überziehen",
+   "q": "Bei welcher Geschwindigkeit überzieht die Maschine mit STARTKLAPPEN (Geradeausflug, 750 kg)?",
+   "options": [
+    "39 KIAS",
+    "45 KIAS",
+    "49 KIAS",
+    "52 KIAS"
+   ],
+   "answer": "45 KIAS",
+   "exp": "Tab. 5.2.2: Startstellung Vs = 48 KCAS / 45 KIAS — liegt zwischen Landung (39 KIAS) und Reise/sauber (49 KIAS).",
+   "ref": "Tab. 5.2.2"
+  },
+  {
+   "cat": "Überziehen",
+   "q": "In einer stetigen 30°-Kurve im Reiseflug (sauber, Vs1 = 49 KIAS geradeaus) — bei welcher IAS überziehst du?",
+   "options": [
+    "49 KIAS",
+    "53 KIAS",
+    "58 KIAS",
+    "62 KIAS"
+   ],
+   "answer": "53 KIAS",
+   "exp": "Vs steigt mit der Wurzel des Lastvielfachen: n = 1/cos 30° = 1,15 → √1,15 ≈ 1,07. 49 KIAS × 1,07 ≈ 53 KIAS. (Zum Vergleich: 45° → ca. 58 KIAS, 60° → ca. 69 KIAS.)",
+   "ref": "§2.9 / Tab. 5.2.2"
+  },
+  {
+   "cat": "Überziehen",
+   "q": "Im Landeanflug (Landeklappen, Vs0 = 39 KIAS geradeaus) — bei welcher IAS überziehst du in einer stetigen 30°-Kurve?",
+   "options": [
+    "39 KIAS",
+    "42 KIAS",
+    "46 KIAS",
+    "50 KIAS"
+   ],
+   "answer": "42 KIAS",
+   "exp": "39 KIAS × 1,07 ≈ 42 KIAS. Genau dieser schrumpfende Abstand macht die Base-to-Final-Kurve so gefährlich — wer hier zieht und tritt, riskiert den Stall-Spin. Mit Reserve fliegen.",
+   "ref": "§2.9 / Tab. 5.2.2",
+   "tip": "Die tödlichste Kurve der Fliegerei. Typischer Ablauf: Du überschießt in der Base die Verlängerung der Piste, willst mit <b>Seitenruder</b> „nachhelfen“ statt sauber zu kurven, ziehst dabei am Höhensteuer und wirst langsam. Der <b>schiebende, unkoordinierte Flug</b> lässt den kurveninneren Flügel zuerst überziehen — das Flugzeug kippt blitzartig nach innen und geht in Bodennähe ins <b>Trudeln</b>, aus dem keine Höhe zum Ausleiten bleibt. Dazu steigt Vs in der Kurve ohnehin (30° → +7 %). Gegenmittel: nicht hetzen, die Kurve nicht enger/steiler ziehen, <b>koordiniert</b> fliegen (Kugel mittig), Fahrtreserve halten — und bei Überschuss lieber <b>durchstarten</b> als in die enge Kurve zwingen."
+  },
+  {
+   "cat": "Betriebsgrenzen",
+   "q": "Wie viele Personen dürfen an Bord, und was gilt beim Alleinflug?",
+   "options": [
+    "Max. 2; Alleinflug nur vom linken Sitz",
+    "Max. 2; Alleinflug nur vom rechten Sitz",
+    "Max. 3; Sitz egal",
+    "Max. 2; Sitz egal"
+   ],
+   "answer": "Max. 2; Alleinflug nur vom linken Sitz",
+   "exp": "Max. Besatzung 2, Mindestbesatzung 1 Pilot. Einsitzig nur vom LINKEN Sitz — dort liegen Bugradsteuerung, Bremsen und die Hauptbedienung griffbereit.",
+   "ref": "§2.11 Flugbesatzung"
+  },
+  {
+   "cat": "Betriebsgrenzen",
+   "q": "Welche Betriebsarten und Manöver sind mit der A210 zulässig?",
+   "options": [
+    "DAY- und NIGHT-VFR; kein Kunstflug, kein absichtliches Trudeln, kein Flug in Vereisung",
+    "Nur DAY-VFR; Kunstflug erlaubt",
+    "IFR zugelassen",
+    "DAY-VFR inkl. absichtlichem Trudeln"
+   ],
+   "answer": "DAY- und NIGHT-VFR; kein Kunstflug, kein absichtliches Trudeln, kein Flug in Vereisung",
+   "exp": "Zugelassen: Sichtflug Tag UND Nacht. Verboten: Kunstflug, absichtliches Trudeln, Flug unter Vereisung. Überziehen nur als statisches Überziehen.",
+   "ref": "§2.9 / §2.12 / Placard 1"
+  },
+  {
+   "cat": "Betriebsgrenzen",
+   "q": "Welche Öldruck-Grenzwerte gelten neben dem Normalbereich (2,0–5,0 bar)?",
+   "options": [
+    "Min. 0,8 bar; max. 7,0 bar (Kaltstart, kurzzeitig)",
+    "Min. 1,5 bar; max. 6,0 bar",
+    "Min. 0,5 bar; max. 8,0 bar",
+    "Min. 1,0 bar; max. 5,0 bar"
+   ],
+   "answer": "Min. 0,8 bar; max. 7,0 bar (Kaltstart, kurzzeitig)",
+   "exp": "Untere rote Linie 0,8 bar (unter 1440 U/min), max. 7,0 bar kurzzeitig beim Kaltstart. Gelbe Warnbereiche: 0,8–2,0 und 5,0–7,0 bar.",
+   "ref": "§2.4 / §2.5"
+  },
+  {
+   "cat": "Elektrik",
+   "q": "Welchen Spannungsbereich zeigt der GRÜNE Bogen des Voltmeters (Normalbetrieb)?",
+   "options": [
+    "10–13 V",
+    "11–14 V",
+    "12–15 V",
+    "13–16 V"
+   ],
+   "answer": "12–15 V",
+   "exp": "Grün 12–15 V. Rot 8–11 V, rot/grün schraffiert 11–12 V (Warnung), rote Linie 15–16 V (Überspannung). Nadel jederzeit im ROTEN Bereich → nächsten Platz anfliegen, Fehler beheben.",
+   "ref": "§2.6 / §7.11.4"
+  },
+  {
+   "cat": "Systeme & Konfiguration",
+   "q": "Die Prandtl-Sonde (Pitot-Statik) liefert zwei Drücke. Welche Instrumente hängen am STATISCHEN Druck?",
+   "options": [
+    "Nur der Fahrtmesser",
+    "Fahrtmesser, Höhenmesser, Variometer und Höhenkodierer",
+    "Nur der Höhenmesser",
+    "Drehzahlmesser und Ladedruck"
+   ],
+   "answer": "Fahrtmesser, Höhenmesser, Variometer und Höhenkodierer",
+   "exp": "Der statische Druck versorgt Fahrtmesser, Höhenmesser, Variometer und Höhenkodierer; der Gesamt-(Stau-)druck nur den Fahrtmesser. Bei täglicher Kontrolle Staurohrschutz entfernen und Funktion prüfen.",
+   "ref": "§7.12 Stau-/Statiksystem",
+   "tip": "So „lügen“ die Instrumente je nach Verstopfung. <b>Pitot (Staudruck) verstopft, Statik frei:</b> Der Fahrtmesser wird zum <b>Höhenmesser</b> — im Steigflug zeigt er zu viel, im Sinkflug zu wenig; Höhenmesser und Vario arbeiten normal. <b>Statikport verstopft, Pitot frei:</b> Der <b>Höhenmesser friert</b> auf der Blockierhöhe ein, das <b>Vario zeigt null</b>, und der Fahrtmesser liest falsch — beim Steigen zu wenig, beim Sinken zu viel (also genau verkehrt zum Pitot-Fall). Eselsbrücke: Pitot-Block → Fahrtmesser verhält sich wie ein Höhenmesser; Statik-Block → die statikbasierten Instrumente stehen/spinnen. Häufigste Ursachen: Insekten, Eis, vergessener Staurohrschutz. Gegenmittel am Boden: Sonde sauber halten, Schutz abnehmen, Funktion prüfen; im Flug hilft die <b>Fluglage + Leistung</b> als unabhängige Referenz."
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Warum ist ein Start bei hoher Dichtehöhe (heiß & hoch) besonders kritisch?",
+   "options": [
+    "Nur der Auftrieb sinkt",
+    "Gleich drei Effekte zusammen: weniger Auftrieb, weniger Motorleistung, schlechterer Propellerschub",
+    "Nur die Motorleistung sinkt",
+    "Die Dichtehöhe hat keinen Einfluss auf den Start"
+   ],
+   "answer": "Gleich drei Effekte zusammen: weniger Auftrieb, weniger Motorleistung, schlechterer Propellerschub",
+   "exp": "Dünne Luft wirkt dreifach: Flügel erzeugt weniger Auftrieb (höhere Abhebegeschwindigkeit über Grund), der Saugmotor leistet weniger, und der Propeller greift schlechter. Start- und Steigleistung verschlechtern sich überproportional.",
+   "ref": "§5.2.4 / §5.2.5 Flugplanung",
+   "tip": "„Density Altitude“ ist die Höhe, die sich das Flugzeug <b>anfühlt</b>, nicht die auf dem Höhenmesser. Hohe Temperatur, hoher Platz, hoher Luftdruck-Abfall und Feuchte lassen die Luft ausdünnen. Der Denkfehler ist, nur an „längere Startrolle“ zu denken — in Wahrheit schlagen <b>drei Ketten gleichzeitig</b> zu: (1) Der Flügel braucht für denselben Auftrieb mehr <b>wahre</b> Geschwindigkeit → du hebst bei höherer Groundspeed ab, die Rollstrecke wächst. (2) Der Saugmotor bekommt weniger Sauerstoff → weniger Leistung. (3) Der Propeller schiebt in dünner Luft schlechter → weniger Schub aus der ohnehin geringeren Leistung. Deshalb die A210-Flugplanung immer mit der <b>Dichtehöhe</b> rechnen (Druckhöhe + Temperaturkorrektur), konservative Diagrammwerte nehmen, und an heißen Tagen von kurzen/weichen Graspisten mit Reserve kalkulieren."
+  }
+ ],
+ "A211": [
+  {
+   "cat": "Massen & Zuladung",
+   "q": "Wie hoch ist die höchstzulässige Startmasse (MTOW) der A210?",
+   "options": [
+    "500 kg",
+    "550 kg",
+    "980 kg",
+    "750 kg"
+   ],
+   "answer": "750 kg",
+   "exp": "MTOW = MLM = 750 kg. Start- und Landemasse sind identisch — es gibt keine separate, höhere Landemasse.",
+   "ref": "§2.7 Massen"
+  },
+  {
+   "cat": "Massen & Zuladung",
+   "q": "Wie hoch ist die höchstzulässige Landemasse?",
+   "options": [
+    "680 kg",
+    "700 kg",
+    "720 kg",
+    "750 kg"
+   ],
+   "answer": "750 kg",
+   "exp": "Landemasse = Startmasse = 750 kg. Anders als bei größeren Mustern gibt es keinen Landemassen-Abschlag.",
+   "ref": "§2.7 Massen"
+  },
+  {
+   "cat": "Massen & Zuladung",
+   "q": "Wie viel darf maximal im Gepäckraum verstaut werden?",
+   "options": [
+    "20 kg",
+    "30 kg",
+    "40 kg",
+    "50 kg"
+   ],
+   "answer": "40 kg",
+   "exp": "40 kg im Gepäckraum. Bei der Beladung immer zusätzlich die Schwerpunktgrenze prüfen — Gepäck wirkt weit hinter der Bezugsebene.",
+   "ref": "§2.7 Massen"
+  },
+  {
+   "cat": "Kraftstoff",
+   "q": "Wie groß ist der Gesamttankinhalt (beide Flügeltanks zusammen)?",
+   "options": [
+    "100 L",
+    "109,6 L",
+    "120 L",
+    "130 L"
+   ],
+   "answer": "120 L",
+   "exp": "2 × 60 L = 120 L Gesamtinhalt. Achtung: davon ist nicht alles ausfliegbar.",
+   "ref": "§2.1 / §7.13"
+  },
+  {
+   "cat": "Kraftstoff",
+   "q": "Wie viel Kraftstoff ist insgesamt ausfliegbar?",
+   "options": [
+    "100 L",
+    "105,6 L",
+    "109,6 L",
+    "120 L"
+   ],
+   "answer": "109,6 L",
+   "exp": "2 × 54,8 L = 109,6 L ausfliegbar. 120 L ist der Gesamtinhalt — die Differenz zu 109,6 L ist die nicht ausfliegbare Reserve.",
+   "ref": "§2.1 Betriebsmittel"
+  },
+  {
+   "cat": "Kraftstoff",
+   "q": "Wie viel Kraftstoff ist pro Tank NICHT ausfliegbar?",
+   "options": [
+    "2,6 L",
+    "5,2 L",
+    "7,5 L",
+    "10,4 L"
+   ],
+   "answer": "5,2 L",
+   "exp": "5,2 L pro Tank sind nicht ausfliegbar (10,4 L gesamt). Diese Menge nie in die Flugplanung einrechnen.",
+   "ref": "§2.1 Betriebsmittel"
+  },
+  {
+   "cat": "Kraftstoff",
+   "q": "Welche minimale Oktanzahl muss der Kraftstoff haben?",
+   "options": [
+    "91 ROZ",
+    "92 ROZ",
+    "95 ROZ",
+    "98 ROZ"
+   ],
+   "answer": "95 ROZ",
+   "exp": "Mindestens 95 ROZ — passend zur Verdichtung von 10,5:1. AVGAS führt zu kürzeren Ölwechselintervallen.",
+   "ref": "§1.8 / §2.1"
+  },
+  {
+   "cat": "Kraftstoff",
+   "q": "Welche Kraftstoffsorten sind für die A210 zugelassen?",
+   "options": [
+    "Nur AVGAS 100LL",
+    "EN228 Super/Super plus, AVGAS 100LL und AVGAS UL 91",
+    "Nur bleifreies Super E10",
+    "Jet A-1 / Diesel"
+   ],
+   "answer": "EN228 Super/Super plus, AVGAS 100LL und AVGAS UL 91",
+   "exp": "A211: EN228 Super/Super plus, AVGAS 100LL und zusätzlich AVGAS UL 91 (min. 95 ROZ). UL 91 ist dampfblasenarm wie 100LL, aber ohne Blei.",
+   "ref": "§1.8 Kraftstoff"
+  },
+  {
+   "cat": "Kraftstoff",
+   "q": "Ab welchem Kraftstoffdruck leuchtet die Warnleuchte auf?",
+   "options": [
+    "unter 0,05 bar",
+    "unter 0,15 bar (2,2 psi)",
+    "unter 0,5 bar",
+    "unter 1,0 bar"
+   ],
+   "answer": "unter 0,15 bar (2,2 psi)",
+   "exp": "Unter 0,15 bar (2,2 psi) meldet der Druckschalter zu geringen Vergaser-Zulaufdruck. Reaktion: elektrische Pumpe EIN, ggf. auf volleren Tank schalten.",
+   "ref": "§7.13 Treibstoffsystem"
+  },
+  {
+   "cat": "Öl & Schmierung",
+   "q": "Wie groß ist der Gesamt-Ölinhalt des Systems?",
+   "options": [
+    "2,0 L",
+    "2,5 L",
+    "3,0 L",
+    "3,5 L"
+   ],
+   "answer": "3,0 L",
+   "exp": "3,0 L. Der ROTAX 912 hat Trockensumpfschmierung mit separatem Öltank — deshalb vor dem Peilen den Propeller durchdrehen, bis es im Tank rauscht.",
+   "ref": "§2.1 Betriebsmittel",
+   "tip": "Der 912 hat <b>keine Ölwanne</b> — das Öl lebt in einem separaten Tank (Trockensumpf). Steht das Flugzeug, sickert Öl aus dem Tank nach unten ins Kurbelgehäuse. Drehst du den Propeller in Motordrehrichtung, fördert der Kurbelgehäusedruck (Blow-by) dieses Öl zurück in den Tank. <b>Erst wenn Luft nachströmt</b>, hörst du am offenen Tank das <b>Rauschen/Gluckern</b> — das Signal: jetzt ist alles Öl im Tank und die Peilung gültig. <b>Kein Gluckern = kein gültiger Messwert</b>: der Stab zeigt dann zu wenig, du füllst nach und <b>überfüllst</b>, sobald das Öl zurückkommt (es wird über die Entlüftung rausgedrückt, der Motor schäumt). Immer nur bei <b>kaltem Motor</b>, Zündung AUS und gesetzter Parkbremse — der Prop ist beim Drehen grundsätzlich als scharf zu behandeln."
+  },
+  {
+   "cat": "Öl & Schmierung",
+   "q": "Wie groß ist die Differenz zwischen MAX und MIN am Ölmessstab?",
+   "options": [
+    "0,25 L",
+    "0,45 L",
+    "0,6 L",
+    "1,0 L"
+   ],
+   "answer": "0,45 L",
+   "exp": "0,45 L zwischen MIN und MAX. Das ist wenig — deshalb ist die korrekte Peilprozedur (erst Öl in den Tank fördern) so wichtig, sonst misst man falsch.",
+   "ref": "§2.1 / §4 Vorflugkontrolle"
+  },
+  {
+   "cat": "Öl & Schmierung",
+   "q": "Wie hoch ist die maximale Öltemperatur (rote Linie)?",
+   "options": [
+    "120 °C",
+    "125 °C",
+    "130 °C",
+    "140 °C"
+   ],
+   "answer": "130 °C",
+   "exp": "Grüner Bogen 50–130 °C, max. 130 °C. Beim ROTAX ist die Öltemperatur die trägere, aussagekräftigere Größe für den thermischen Zustand als die CHT.",
+   "ref": "§2.4 Instrumente"
+  },
+  {
+   "cat": "Öl & Schmierung",
+   "q": "Was ist der günstige Öltemperatur-Betriebsbereich?",
+   "options": [
+    "70–90 °C",
+    "80–100 °C",
+    "90–110 °C",
+    "100–120 °C"
+   ],
+   "answer": "90–110 °C",
+   "exp": "90–110 °C. Zu kaltes Öl ist zäh (schlechte Schmierung + schlechter Wärmetransport) — das ist das eigentliche Problem, nicht die Temperatur an sich.",
+   "ref": "§2.4 Instrumente"
+  },
+  {
+   "cat": "Kühlung & Kühlerabdeckung",
+   "q": "Wie hoch ist die maximale Zylinderkopftemperatur (CHT)?",
+   "options": [
+    "120 °C",
+    "130 °C",
+    "135 °C",
+    "150 °C"
+   ],
+   "answer": "120 °C",
+   "exp": "Max. CHT = 120 °C (rote Linie); bei altem Zylinderkopf an Zylinder 3 bis 129 °C (SB-AT01-029). Deutlich enger als bei der A210 (135 °C) — die CHT genau im Blick behalten.",
+   "ref": "§2.4 Instrumente"
+  },
+  {
+   "cat": "Kühlung & Kühlerabdeckung",
+   "q": "Wie viel Kühlmittel fasst das System (min/max)?",
+   "options": [
+    "1,5 / 2,0 L",
+    "2,0 / 2,4 L",
+    "2,4 / 2,5 L",
+    "3,0 / 3,5 L"
+   ],
+   "answer": "2,4 / 2,5 L",
+   "exp": "Kühlmittelinhalt min. 2,4 L / max. 2,5 L; Überlaufgefäß 0,1–0,2 L. A211: konventionelles Ethylenglykol/Wasser 50/50 — NICHT das wasserfreie EVANS NPG+ der A210. Nie mischen.",
+   "ref": "§2.1 Betriebsmittel"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Wie hoch ist VNE (nicht zu überschreitende Geschwindigkeit)?",
+   "options": [
+    "160 kt",
+    "163 kt",
+    "165 kt",
+    "170 kt"
+   ],
+   "answer": "165 kt",
+   "exp": "VNE = 165 kt IAS, rote Linie am Fahrtmesser. Darf in keiner Betriebsart überschritten werden.",
+   "ref": "§2.2 Geschwindigkeitsgrenzen"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Wie hoch ist VNO (zul. Höchstgeschwindigkeit im Reiseflug)?",
+   "options": [
+    "120 kt",
+    "125 kt",
+    "130 kt",
+    "140 kt"
+   ],
+   "answer": "130 kt",
+   "exp": "VNO = 130 kt = Beginn des gelben Bogens. Darüber (130–165 kt) nur in ruhiger Luft und mit Vorsicht.",
+   "ref": "§2.2 / §2.3"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Wie hoch ist VFE (Höchstgeschw. mit ausgefahrenen Klappen)?",
+   "options": [
+    "80 kt",
+    "85 kt",
+    "90 kt",
+    "95 kt"
+   ],
+   "answer": "90 kt",
+   "exp": "VFE = 90 kt = oberes Ende des weißen Bogens. Das POH kennt nur einen VFE-Wert, nicht getrennt für Start-/Landeklappe.",
+   "ref": "§2.2 / §2.3"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Wie hoch ist VA (Manövergeschwindigkeit)?",
+   "options": [
+    "100 kt",
+    "108 kt",
+    "112 kt",
+    "120 kt"
+   ],
+   "answer": "112 kt",
+   "exp": "VA = 112 kt. Oberhalb keine abrupten, vollen Ruderausschläge — sonst Überlastungsgefahr. VA sinkt bei geringerer Masse.",
+   "ref": "§2.2 Geschwindigkeitsgrenzen"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Welchen Bereich umfasst der weiße Bogen am Fahrtmesser?",
+   "options": [
+    "39–90 kt",
+    "44–90 kt",
+    "40–85 kt",
+    "48–95 kt"
+   ],
+   "answer": "39–90 kt",
+   "exp": "Weißer Bogen 39–90 kt = zulässiger Bereich mit ausgefahrenen Landeklappen. Untergrenze 39 = Vs0-Markierung (KIAS), Obergrenze 90 = VFE.",
+   "ref": "§2.3 Fahrtmessermarkierungen"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Welchen Bereich umfasst der grüne Bogen?",
+   "options": [
+    "44–130 kt",
+    "49–130 kt",
+    "52–130 kt",
+    "52–165 kt"
+   ],
+   "answer": "49–130 kt",
+   "exp": "Grüner Bogen 49–130 kt = normaler Betriebsbereich. Untergrenze 49 = Überziehmarkierung sauber (KIAS), Obergrenze 130 = VNO.",
+   "ref": "§2.3 Fahrtmessermarkierungen"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Welchen Bereich umfasst der gelbe Bogen (Vorsichtsbereich)?",
+   "options": [
+    "125–165 kt",
+    "130–160 kt",
+    "130–165 kt",
+    "130–170 kt"
+   ],
+   "answer": "130–165 kt",
+   "exp": "Gelber Bogen 130–165 kt: nur in ruhiger Luft und mit äußerster Vorsicht. Bei 165 kt die rote Linie (VNE).",
+   "ref": "§2.3 Fahrtmessermarkierungen"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Welche Geschwindigkeit fliegt man für die beste Gleitstrecke bei Triebwerksausfall?",
+   "options": [
+    "70 kt",
+    "75 kt",
+    "78 kt",
+    "82 kt"
+   ],
+   "answer": "78 kt",
+   "exp": "78 kt IAS, Klappen ein / Reisestellung. Das ist die Geschwindigkeit für den flachsten Gleitwinkel.",
+   "ref": "§3.8 Gleitflug"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Wie groß ist die sichere Gleitzahl?",
+   "options": [
+    "10",
+    "12",
+    "14",
+    "16"
+   ],
+   "answer": "14",
+   "exp": "Sichere Gleitzahl 14: 1000 ft Höhe ≈ 4,0 km Strecke (bei Windstille). Faustregel für die Feldwahl im Ernstfall.",
+   "ref": "§3.8 Gleitflug"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Wie hoch ist Vy (Geschwindigkeit besten Steigens) in Meereshöhe?",
+   "options": [
+    "60 kt",
+    "63 kt",
+    "65 kt",
+    "70 kt"
+   ],
+   "answer": "65 kt",
+   "exp": "Vy = 65 KIAS bis 5000 ft (Klappen Reisestellung). Darüber abnehmend: 63 bis 10.000 ft, 61 bis 13.000 ft.",
+   "ref": "§5 Flugleistungen"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Wie hoch ist Vx (bester Steigwinkel) in Meereshöhe?",
+   "options": [
+    "48 kt",
+    "52 kt",
+    "57 kt",
+    "60 kt"
+   ],
+   "answer": "52 kt",
+   "exp": "Vx = 52 KIAS (Klappen Startstellung). Vx < Vy — steilster Winkel zum Hindernis, nicht schnellstes Steigen.",
+   "ref": "§5 Flugleistungen"
+  },
+  {
+   "cat": "Geschwindigkeiten",
+   "q": "Welche Anfluggeschwindigkeit gilt für die Normallandung (Landeklappen)?",
+   "options": [
+    "55 kt",
+    "60 kt",
+    "65 kt",
+    "70 kt"
+   ],
+   "answer": "60 kt",
+   "exp": "60 kt in Landekonfiguration. Auch die Steiggeschwindigkeit beim Durchstarten ist 60 kt.",
+   "ref": "§4 Normalverfahren"
+  },
+  {
+   "cat": "Überziehen",
+   "q": "Bei welcher IAS liegt die Überziehmarkierung in Landekonfiguration (weißer Bogen unten)?",
+   "options": [
+    "39 kt",
+    "42 kt",
+    "44 kt",
+    "48 kt"
+   ],
+   "answer": "39 kt",
+   "exp": "Untere Grenze weißer Bogen = 39 KIAS (Landung, Tab. 5.2.2). Mit Klappen stallt man langsamer als sauber (49 KIAS).",
+   "ref": "§2.3 / Tab. 5.2.2"
+  },
+  {
+   "cat": "Überziehen",
+   "q": "Bei welcher IAS liegt die Überziehmarkierung im sauberen Reiseflug (grüner Bogen unten)?",
+   "options": [
+    "44 kt",
+    "48 kt",
+    "49 kt",
+    "52 kt"
+   ],
+   "answer": "49 kt",
+   "exp": "Untere Grenze grüner Bogen = 49 KIAS (sauber). Mit Klappen stallt man langsamer (39 KIAS), nicht schneller.",
+   "ref": "§2.3 / Tab. 5.2.2"
+  },
+  {
+   "cat": "Überziehen",
+   "q": "Warum liegt die Überziehgeschwindigkeit mit ausgefahrenen Klappen NIEDRIGER als im sauberen Flug?",
+   "options": [
+    "Weil die Klappen den maximalen Auftriebsbeiwert erhöhen",
+    "Weil weniger Widerstand entsteht",
+    "Weil das Flugzeug leichter wird",
+    "Weil der Anstellwinkel kleiner wird"
+   ],
+   "answer": "Weil die Klappen den maximalen Auftriebsbeiwert erhöhen",
+   "exp": "Klappen erhöhen den maximalen Auftriebsbeiwert. Bei gleichem Gewicht reicht dann eine geringere Geschwindigkeit für den nötigen Auftrieb → Vs sinkt (44 vs. 52 kt).",
+   "ref": "Aerodynamik / Tab. 5.2.2"
+  },
+  {
+   "cat": "Überziehen",
+   "q": "Unter welchen Bedingungen wurden die Überziehgeschwindigkeiten der Tab. 5.2.2 ermittelt?",
+   "options": [
+    "600 kg, CG hinten, Vollgas",
+    "750 kg, CG 427 mm hinter BE, Leerlauf",
+    "750 kg, CG hinten, Reiseleistung",
+    "MTOW, CG 523 mm, Leerlauf"
+   ],
+   "answer": "750 kg, CG 427 mm hinter BE, Leerlauf",
+   "exp": "Ermittelt bei 750 kg, vorderste Schwerpunktlage CG = 427 mm hinter BE, Leerlauf (Tab. 5.2.2).",
+   "ref": "Tab. 5.2.2"
+  },
+  {
+   "cat": "Triebwerk",
+   "q": "Welcher Motor treibt die A210 an?",
+   "options": [
+    "ROTAX 912 UL",
+    "ROTAX 912 iS",
+    "ROTAX 912 S3",
+    "ROTAX 914"
+   ],
+   "answer": "ROTAX 912 S3",
+   "exp": "ROTAX 912 S3 — Vierzylinder-Viertakt-Boxer mit luftgekühlten Zylindern und flüssigkeitsgekühlten Zylinderköpfen (Hybridkühlung).",
+   "ref": "§2.1 Triebwerk"
+  },
+  {
+   "cat": "Triebwerk",
+   "q": "Wie hoch ist die maximale Startleistung des Triebwerks (5 min)?",
+   "options": [
+    "69 kW",
+    "71 kW",
+    "73,5 kW",
+    "80 kW"
+   ],
+   "answer": "73,5 kW",
+   "exp": "A211: 73,5 kW Startleistung für max. 5 min bei 2385 U/min; Dauerleistung 69 kW bei 2260 U/min. Die A210 hat durchgehend 69 kW.",
+   "ref": "§2.4 Triebwerk"
+  },
+  {
+   "cat": "Triebwerk",
+   "q": "Welche Zylinder-Komponente ist beim 912 S3 flüssigkeitsgekühlt?",
+   "options": [
+    "Die gesamten Zylinder",
+    "Nur die Zylinderköpfe",
+    "Nur die Kolben",
+    "Gar nichts, reine Luftkühlung"
+   ],
+   "answer": "Nur die Zylinderköpfe",
+   "exp": "Hybridkühlung: Zylinder luftgekühlt, Zylinderköpfe flüssigkeitsgekühlt. Deshalb hat der Motor CHT-, Öltemperatur- und Kühlmittel-Überwachung.",
+   "ref": "§2.1 Triebwerk"
+  },
+  {
+   "cat": "Triebwerk",
+   "q": "Wie hoch ist die maximal zulässige Dauerdrehzahl (Propeller, rote Linie)?",
+   "options": [
+    "2160 U/min",
+    "2200 U/min",
+    "2260 U/min",
+    "2400 U/min"
+   ],
+   "answer": "2260 U/min",
+   "exp": "Dauerdrehzahl max. 2260 U/min (grüner Bogen bis 2260). Darüber liegt bei der A211 der gelbe Startbereich bis zur roten Linie 2385 U/min — nur für max. 5 Minuten (Start/Steigflug).",
+   "ref": "§2.4 Instrumente"
+  },
+  {
+   "cat": "Triebwerk",
+   "q": "Womit wird der ROTAX 912 S3 gezündet?",
+   "options": [
+    "Klassische Magnetzündung mit rotierenden Magneten",
+    "Kontaktlose Magnet-Kondensator-Doppelzündanlage (Doppel-CDI)",
+    "Einfache Batteriezündung",
+    "Kompressionszündung ohne Kerzen"
+   ],
+   "answer": "Kontaktlose Magnet-Kondensator-Doppelzündanlage (Doppel-CDI)",
+   "exp": "Zwei unabhängige elektronische Zündkreise (Doppel-CDI). Der „Magnetcheck“ prüft je einen Kreis — ein zu KLEINER Drehzahlabfall ist genauso verdächtig wie ein zu großer.",
+   "ref": "§7.9 Triebwerk"
+  },
+  {
+   "cat": "Triebwerk",
+   "q": "Ab welcher Außentemperatur muss der Motor vor dem Start vorgewärmt werden?",
+   "options": [
+    "unter -10 °C",
+    "unter -15 °C",
+    "unter -20 °C",
+    "unter -25 °C"
+   ],
+   "answer": "unter -25 °C",
+   "exp": "Unter -25 °C ist Vorwärmen vorgeschrieben. Bei unter -10 °C wird zusätzlich eine externe Starthilfe empfohlen.",
+   "ref": "§2.4 / §7"
+  },
+  {
+   "cat": "Propeller",
+   "q": "Welcher Propeller ist an der A210 verbaut?",
+   "options": [
+    "Fester Zweiblatt-Holzpropeller",
+    "Zweiblatt-Verstellpropeller mit Constant-Speed-Regelung",
+    "Dreiblatt-Festpropeller",
+    "Verstellpropeller mit Segelstellung"
+   ],
+   "answer": "Zweiblatt-Verstellpropeller mit Constant-Speed-Regelung",
+   "exp": "mt-Propeller MTV-21, Zweiblatt, hydraulische Constant-Speed-Regelung — hält die vorgewählte Drehzahl bei wechselnder Leistung/Geschwindigkeit konstant.",
+   "ref": "§1.7 Propeller"
+  },
+  {
+   "cat": "Propeller",
+   "q": "Wie stellen sich die Propellerblätter bei Ausfall des Öldruckes?",
+   "options": [
+    "Auf größte Steigung",
+    "Auf kleinste Steigung",
+    "In Segelstellung",
+    "Sie bleiben in der letzten Stellung fixiert"
+   ],
+   "answer": "Auf kleinste Steigung",
+   "exp": "Bei Öldruckausfall gehen die Blätter auf kleinste Steigung → Weiterflug mit voller Leistung bis zur max. Drehzahl möglich. Federkraft/Anschlag übernimmt, wenn der Öldruck fehlt.",
+   "ref": "§7 / §3 Notverfahren",
+   "tip": "Warum kleinste Steigung und keine Segelstellung? Die Blattverstellung arbeitet gegen eine <b>Feder</b>: Öldruck dreht die Blätter auf große Steigung, die Federkraft auf kleine. <b>Fällt der Öldruck aus</b>, gewinnt die Feder → kleinste Steigung = größte Drehzahl. Das ist die <b>fail-safe</b>-Logik: Du behältst volle Leistung für Start/Durchstart, statt mit einem stehengebliebenen Grobblatt kaum noch Schub zu haben. Der Preis: <b>keine Segelstellung</b> — bei echtem Motorausfall bleibt das windmillende Blatt auf kleiner Steigung und erzeugt viel Widerstand. Deshalb ist die sichere Gleitzahl „nur“ 14, und saubere Gleitfluggeschwindigkeit (78 kt) + frühe Feldwahl zählen doppelt."
+  },
+  {
+   "cat": "Propeller",
+   "q": "Besitzt der Propeller der A210 eine Segelstellung?",
+   "options": [
+    "Ja, elektrisch schaltbar",
+    "Ja, hydraulisch",
+    "Nein",
+    "Nur bei stehendem Motor"
+   ],
+   "answer": "Nein",
+   "exp": "Keine Segelstellung. Bei Motorausfall erzeugt der (windmillende) Propeller Widerstand — das ist mit ein Grund, warum die sichere Gleitzahl „nur“ 14 beträgt.",
+   "ref": "§7 Propeller"
+  },
+  {
+   "cat": "Schwerpunkt & Last",
+   "q": "Wo liegt die vorderste Flugmassen-Schwerpunktgrenze (hinter der Bezugsebene)?",
+   "options": [
+    "400 mm",
+    "427 mm",
+    "462 mm",
+    "523 mm"
+   ],
+   "answer": "427 mm",
+   "exp": "Vorderste Lage: 31% MAC = 427 mm hinter BE. Die Bezugsebene liegt an der Flügelvorderkante an der Trennstelle zum Rumpf.",
+   "ref": "§2.8 Schwerpunkt"
+  },
+  {
+   "cat": "Schwerpunkt & Last",
+   "q": "Wo liegt die hinterste Flugmassen-Schwerpunktgrenze?",
+   "options": [
+    "500 mm",
+    "512 mm",
+    "523 mm",
+    "550 mm"
+   ],
+   "answer": "523 mm",
+   "exp": "Hinterste Lage: 40% MAC = 523 mm hinter BE. Ein hinterer Schwerpunkt verringert die Längsstabilität und die Überziehmarge.",
+   "ref": "§2.8 Schwerpunkt"
+  },
+  {
+   "cat": "Schwerpunkt & Last",
+   "q": "Wie hoch ist das maximale positive Lastvielfache bei VA (ohne Klappen)?",
+   "options": [
+    "2,0 g",
+    "3,5 g",
+    "4,0 g",
+    "4,4 g"
+   ],
+   "answer": "4,0 g",
+   "exp": "+4,0 g / -2,0 g bei VA und bei VNE. Absichtliche negative Belastung ist generell nicht gestattet.",
+   "ref": "§2.10 Manöverlastvielfache"
+  },
+  {
+   "cat": "Schwerpunkt & Last",
+   "q": "Wie hoch ist das maximale positive Lastvielfache mit ausgefahrenen Landeklappen?",
+   "options": [
+    "1,5 g",
+    "2,0 g",
+    "3,0 g",
+    "4,0 g"
+   ],
+   "answer": "2,0 g",
+   "exp": "Mit Klappen nur +2,0 g / 0 g. Deshalb ist VFE auch eine Struktur- und nicht nur eine Auftriebsgrenze.",
+   "ref": "§2.10 Manöverlastvielfache"
+  },
+  {
+   "cat": "Schwerpunkt & Last",
+   "q": "Welche maximale Schräglage ist im Normalbetrieb zulässig?",
+   "options": [
+    "30°",
+    "45°",
+    "60°",
+    "90°"
+   ],
+   "answer": "60°",
+   "exp": "Steilkurven bis < 60° Schräglage. Bei 60° verdoppelt sich das Lastvielfache (2 g) und Vs steigt um ~41%. Kunstflug ist nicht zugelassen.",
+   "ref": "§2.9 Manöver"
+  },
+  {
+   "cat": "Systeme & Konfiguration",
+   "q": "Welchen Klappenwinkel hat die Landestellung?",
+   "options": [
+    "17°",
+    "25°",
+    "35°",
+    "40°"
+   ],
+   "answer": "35°",
+   "exp": "Reise 0° (rot), Start 17° (gelb), Landung 35° (grün) — die Farben entsprechen den Markierungen der Stellungsanzeige.",
+   "ref": "§7 / Placard"
+  },
+  {
+   "cat": "Systeme & Konfiguration",
+   "q": "Welcher Klappenwinkel entspricht der Startstellung?",
+   "options": [
+    "0°",
+    "17°",
+    "25°",
+    "35°"
+   ],
+   "answer": "17°",
+   "exp": "Startstellung 17° (gelbe Markierung). Sie liefert zusätzlichen Auftrieb bei noch moderatem Widerstand für Start und Steigflug.",
+   "ref": "§7 / Placard"
+  },
+  {
+   "cat": "Systeme & Konfiguration",
+   "q": "In welchem Abstand sollte zwischen den Tanks umgeschaltet werden?",
+   "options": [
+    "alle 15 min",
+    "alle 30 min",
+    "alle 60 min",
+    "erst wenn ein Tank leer ist"
+   ],
+   "answer": "alle 60 min",
+   "exp": "Placard: „ALLE 60 MIN“. Das hält die Füllstände ausgeglichen und damit den Schwerpunkt/Trimmzustand symmetrisch.",
+   "ref": "Placard / §7.13"
+  },
+  {
+   "cat": "Systeme & Konfiguration",
+   "q": "Wann muss die elektrische Kraftstoffpumpe eingeschaltet sein?",
+   "options": [
+    "Nur im Reiseflug",
+    "Bei Start und Landung",
+    "Nur bei Motorausfall",
+    "Dauerhaft im gesamten Flug"
+   ],
+   "answer": "Bei Start und Landung",
+   "exp": "Bei Start, Landung, in kritischen Phasen und bei zu geringem Druck. Die mechanische Pumpe ist primär, die elektrische ist die Redundanz.",
+   "ref": "§7.13 Treibstoffsystem"
+  },
+  {
+   "cat": "Systeme & Konfiguration",
+   "q": "Was bewirkt die eingeschaltete Vergaservorwärmung neben dem Enteisen?",
+   "options": [
+    "Sie erhöht die Leistung",
+    "Sie mindert die Motorleistung",
+    "Sie hat keinen Leistungseinfluss",
+    "Sie erhöht den Ladedruck"
+   ],
+   "answer": "Sie mindert die Motorleistung",
+   "exp": "Warme, dünnere Luft → weniger Leistung. Ausnahme Durchstarten: dort Vollgas und Vorwärmung AUS, um keine Leistung zu verschenken.",
+   "ref": "§7.12.5 Vergaservorwärmung"
+  },
+  {
+   "cat": "Notverfahren",
+   "q": "Der Öldruck fällt unter den grünen Bereich. Was entscheidet über die Dringlichkeit?",
+   "options": [
+    "Die Flughöhe",
+    "Die Öltemperatur",
+    "Der Ladedruck",
+    "Die Propellerdrehzahl"
+   ],
+   "answer": "Die Öltemperatur",
+   "exp": "Öldruck fällt + Temp NORMAL → Landung auf nächstem Flugplatz. Öldruck fällt + Temp STEIGEND → Leistung reduzieren, Sicherheitslandung, Motorausfall droht unmittelbar. Die Temperatur trennt kontrolliert von akut.",
+   "ref": "§3.3 Triebwerkstörungen",
+   "tip": "Warum ausgerechnet die Öltemperatur entscheidet: Öl hat zwei Jobs — <b>schmieren</b> und <b>Wärme abführen</b>. Ein Druckabfall allein kann harmlos sein (Sensor, Leitung, Anzeige) oder echt (Ölverlust). Die Temperatur verrät, welcher Fall vorliegt. <b>Bleibt sie normal</b>, zirkuliert noch Öl und kühlt — die Lager laufen, du hast Zeit (Landung auf nächstem Platz). <b>Steigt sie</b>, trägt das Öl keine Wärme mehr ab → es ist tatsächlich zu wenig da, die Lager laufen trocken und heiß und fressen in Kürze → <b>Motorausfall steht unmittelbar bevor</b>: Leistung sofort auf das Nötigste reduzieren und Sicherheitslandung. Kurz: Der Druck sagt „etwas stimmt nicht“, die Temperatur sagt „wie dringend“."
+  },
+  {
+   "cat": "Notverfahren",
+   "q": "Erste Maßnahme bei Abfall des Kraftstoffdrucks?",
+   "options": [
+    "Motor abstellen",
+    "Elektrische Kraftstoffpumpe EIN",
+    "Vollgas geben",
+    "Brandhahn OFF"
+   ],
+   "answer": "Elektrische Kraftstoffpumpe EIN",
+   "exp": "Elektrische Pumpe EIN, ggf. auf volleren Tank schalten. Nach dem Umschalten dauert es ca. 8 sec, bis wieder voller Druck anliegt.",
+   "ref": "§3.3 Kraftstoffdruckabfall"
+  },
+  {
+   "cat": "Notverfahren",
+   "q": "Ab welcher Geschwindigkeit dreht sich der Propeller bei abgestelltem Motor von selbst (Windmilling)?",
+   "options": [
+    "> 40 kts",
+    "> 60 kts",
+    "> 78 kts",
+    "> 90 kts"
+   ],
+   "answer": "> 60 kts",
+   "exp": "Über 60 kts windmillt der Propeller. Das ist die Grundlage für den Wiederanlassversuch „mit drehendem Propeller“.",
+   "ref": "§3 Wiederanlassen"
+  },
+  {
+   "cat": "Notverfahren",
+   "q": "Auf welche Geschwindigkeit drückt man an, um den Motor per Windmilling zu starten?",
+   "options": [
+    "78 kts",
+    "90 kts",
+    "110 kts",
+    "120 kts"
+   ],
+   "answer": "120 kts",
+   "exp": "Andrücken auf ca. 120 kts bringt den stehenden Propeller zum Drehen. Der dabei entstehende Höhenverlust beträgt ca. 1000 ft / 300 m.",
+   "ref": "§3 Wiederanlassen"
+  },
+  {
+   "cat": "Notverfahren",
+   "q": "Welche Anfluggeschwindigkeit gilt bei einer Notlandung mit Landeklappen in Landestellung?",
+   "options": [
+    "55 kts",
+    "60 kts",
+    "65 kts",
+    "70 kts"
+   ],
+   "answer": "60 kts",
+   "exp": "Landeklappen Landung 60 kts, Startstellung 65 kts, Reisestellung 70 kts. Weniger Klappe → höhere Anfluggeschwindigkeit.",
+   "ref": "§3.4 Notlandung"
+  },
+  {
+   "cat": "Betriebsgrenzen",
+   "q": "Wie hoch ist die maximal nachgewiesene Seitenwindkomponente?",
+   "options": [
+    "10 kt",
+    "12 kt",
+    "15 kt",
+    "20 kt"
+   ],
+   "answer": "15 kt",
+   "exp": "15 kt / 27 km/h nachgewiesen. Ein demonstrierter, kein absoluter Grenzwert — aber ein Start bei mehr kann unbeherrschbar werden.",
+   "ref": "§2.14 Seitenwind"
+  },
+  {
+   "cat": "Betriebsgrenzen",
+   "q": "Wie hoch ist der Reifendruck am Hauptrad?",
+   "options": [
+    "2,0 bar",
+    "2,2 bar",
+    "2,5 bar",
+    "3,0 bar"
+   ],
+   "answer": "2,5 bar",
+   "exp": "Hauptrad 2,5 bar, Bugrad 2,0 bar. Reifendruck und Rutschmarkierung gehören in jede tägliche Kontrolle.",
+   "ref": "§2 / §7 Fahrwerk"
+  },
+  {
+   "cat": "Betriebsgrenzen",
+   "q": "In welche Lufttüchtigkeitsgruppe ist die A210 eingestuft?",
+   "options": [
+    "Utility",
+    "Aerobatic",
+    "Normal",
+    "Commuter"
+   ],
+   "answer": "Normal",
+   "exp": "Gruppe NORMAL (JAR-VLA / EASA). Das bedeutet u. a.: kein Kunstflug, Schräglage < 60°, +4,0/-2,0 g.",
+   "ref": "§1 / §2 Betriebsgrenzen"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Bei welcher Drehzahl wird die Zündkreisprüfung (Magnet-Check) durchgeführt?",
+   "options": [
+    "1500 U/min",
+    "1700 U/min",
+    "2000 U/min",
+    "2260 U/min"
+   ],
+   "answer": "1700 U/min",
+   "exp": "Bei 1700 U/min L-BOTH-R-BOTH durchschalten — dieselbe Drehzahl gilt auch für die Propellerprobe.",
+   "ref": "§4.5.5 Vor dem Start"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Wie groß darf der Drehzahlabfall beim Abschalten eines Zündkreises höchstens sein?",
+   "options": [
+    "50 U/min",
+    "120 U/min",
+    "200 U/min",
+    "300 U/min"
+   ],
+   "answer": "120 U/min",
+   "exp": "Max. 120 U/min. Genauso wichtig: ein Abfall muss überhaupt spürbar sein — KEIN Abfall deutet auf einen ständig heißen Zündkreis hin.",
+   "ref": "§4.5.5 Vor dem Start",
+   "tip": "Ein <b>fehlender</b> Drehzahlabfall ist gefährlicher als ein zu großer. Er bedeutet meist, dass sich der abgewählte Zündkreis gar nicht abschalten lässt (unterbrochene Masseleitung oder defekter Zündschalter) — ein <b>heißer Zündkreis</b> („hot mag“). Der Kreis zündet weiter, auch in Stellung OFF. Folgen: Der <b>Propeller ist ab sofort als scharf zu behandeln</b>, auch bei Zündung OFF — Gefahr beim Durchdrehen zur Ölkontrolle und beim Abstellen. Der Motor lässt sich evtl. nicht mehr über den Zündschalter stoppen (nur noch über Brandhahn OFF / Aushungern). Und die Redundanz der beiden Kreise ist nicht mehr nachgewiesen. <b>Start abbrechen, nicht fliegen</b>, bis der Fehler behoben ist; den Propeller bis dahin strikt als lebensgefährlich behandeln."
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Wie groß darf die Differenz des Drehzahlabfalls zwischen linkem und rechtem Zündkreis höchstens sein?",
+   "options": [
+    "25 U/min",
+    "50 U/min",
+    "100 U/min",
+    "120 U/min"
+   ],
+   "answer": "50 U/min",
+   "exp": "Max. 50 U/min Differenz zwischen L und R. Eine große Differenz weist auf ein Problem in einem der beiden Kreise hin.",
+   "ref": "§4.5.5 Vor dem Start"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Beim Durchschalten des Propellers zwischen Start- und Reisestellung — welcher Drehzahlabfall wird geprüft?",
+   "options": [
+    "100 ± 50 U/min",
+    "200 ± 50 U/min",
+    "300 ± 50 U/min",
+    "400 ± 50 U/min"
+   ],
+   "answer": "200 ± 50 U/min",
+   "exp": "3× zwischen START- und REISE-Stellung schalten, Abfall 200 ± 50 U/min — das bestätigt, dass die Verstellung Öl annimmt. Danach STARTSTELLUNG.",
+   "ref": "§4.5.5 Vor dem Start"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Welcher Drehzahlabfall bestätigt beim Run-up die Funktion der Vergaservorwärmung?",
+   "options": [
+    "5–15 U/min",
+    "20–50 U/min",
+    "60–100 U/min",
+    "100–150 U/min"
+   ],
+   "answer": "20–50 U/min",
+   "exp": "20–50 U/min. Warme Luft ist dünner → weniger Leistung. Kein Abfall = die Vorwärmung wirkt nicht.",
+   "ref": "§4.5.5 Vor dem Start"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Bis wann muss der Öldruck nach dem Anlassen im grünen Bereich sein?",
+   "options": [
+    "sofort, sonst Startabbruch",
+    "spätestens nach 10 sec — sonst Motor abstellen",
+    "nach 30 sec",
+    "nach 60 sec"
+   ],
+   "answer": "spätestens nach 10 sec — sonst Motor abstellen",
+   "exp": "Spätestens 10 sec nach dem Anlassen im grünen Bereich; bei unter 1,5 bar muss der Motor unmittelbar abgestellt werden.",
+   "ref": "§4.5.2 Anlassen"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Wie lange darf der Anlasser maximal am Stück betätigt werden?",
+   "options": [
+    "5 sec",
+    "10 sec",
+    "20 sec",
+    "30 sec"
+   ],
+   "answer": "10 sec",
+   "exp": "Max. 10 sec, danach mindestens 2 min Abkühlung. Zum Anlassen braucht der Motor min. 100 U/min am Propeller.",
+   "ref": "§4.5.2 Anlassen"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Bis zu welcher Öltemperatur wird warmgelaufen, bevor die volle Startleistung gegeben wird?",
+   "options": [
+    "40 °C",
+    "50 °C",
+    "60 °C",
+    "90 °C"
+   ],
+   "answer": "50 °C",
+   "exp": "Warmlauf zuerst 2 min bei 820 U/min, dann bei 1030 U/min bis 50 °C Öltemperatur (beim Rollen möglich). 50 °C ist zugleich die untere grüne Marke.",
+   "ref": "§4.5.3 Vor dem Rollen"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Bei welcher Geschwindigkeit wird beim Start das Bugrad abgehoben (Rotation)?",
+   "options": [
+    "44 kts",
+    "50 kts",
+    "57 kts",
+    "65 kts"
+   ],
+   "answer": "50 kts",
+   "exp": "Bugrad abheben bei 50 kts (VIAS), anschließend Steigflug mit 65 kts.",
+   "ref": "§4.5.6 Start"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Welche Steigfluggeschwindigkeit gilt beim normalen Start nach dem Abheben?",
+   "options": [
+    "57 kts",
+    "60 kts",
+    "65 kts",
+    "70 kts"
+   ],
+   "answer": "65 kts",
+   "exp": "65 kts normal. Nur für die kürzeste Strecke über ein 15-m-Hindernis: 57 kts — steiler, aber langsamer.",
+   "ref": "§4.5.6 Start"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Was ist beim Durchstarten der ERSTE Schritt?",
+   "options": [
+    "Leistungshebel VOLLGAS",
+    "Propellerverstellhebel STARTSTELLUNG",
+    "Landeklappen einfahren",
+    "Vergaservorwärmung EIN"
+   ],
+   "answer": "Propellerverstellhebel STARTSTELLUNG",
+   "exp": "Erst Prop STARTSTELLUNG, dann Vollgas, Vergaservorwärmung AUS, Klappen START, 65 kts. Prop-vor-Gas schützt den Motor.",
+   "ref": "§4.5.11 Durchstarten"
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Warum sollte Vollgas bei eingeschalteter Vergaservorwärmung vermieden werden?",
+   "options": [
+    "Um Triebwerkschäden vorzubeugen",
+    "Wegen Überziehgefahr",
+    "Wegen zu hohem Öldruck",
+    "Es ist unbedenklich"
+   ],
+   "answer": "Um Triebwerkschäden vorzubeugen",
+   "exp": "Warme Ansaugluft plus Vollgas belastet den Motor. Deshalb beim Durchstarten die Vorwärmung AUS.",
+   "ref": "§4.5.11 Durchstarten",
+   "tip": "Warme Luft ist <b>dünner</b>: Mit gezogener Vergaservorwärmung bekommt der Motor weniger Sauerstoff pro Hub → weniger Leistung und ein fetteres, heißeres Gemisch. Bei <b>Vollgas</b> addiert sich das zu höheren Brennraumtemperaturen und Klopf-/Detonationsneigung — das POH warnt ausdrücklich vor Triebwerkschäden. Beim 912 kannst du das nicht per Gemischhebel ausgleichen (die Vergaser regeln automatisch). Deshalb: Vorwärmung ist ein <b>Enteisungs- und Vorbeugewerkzeug bei Teillast</b>, nicht für Volllast. Beim <b>Durchstarten</b> gehört sie zuerst AUS — dort willst du jedes Watt und keine Zusatzlast für den Motor."
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Wie erhöht man die Motorleistung korrekt?",
+   "options": [
+    "zuerst Drehzahl, dann Ladedruck",
+    "zuerst Ladedruck, dann Drehzahl",
+    "beides gleichzeitig",
+    "nur den Ladedruck"
+   ],
+   "answer": "zuerst Drehzahl, dann Ladedruck",
+   "exp": "Erhöhen: zuerst Drehzahl, dann Ladedruck. Senken umgekehrt. So vermeidet man hohen Ladedruck bei niedriger Drehzahl.",
+   "ref": "§4.5.6 Start"
+  },
+  {
+   "cat": "Überziehen",
+   "q": "Um wie viel steigt die Überziehgeschwindigkeit in einer 60°-Steilkurve?",
+   "options": [
+    "+15 %",
+    "+25 %",
+    "+41 %",
+    "+100 %"
+   ],
+   "answer": "+41 %",
+   "exp": "Vs steigt mit der Wurzel des Lastvielfachen. Bei 60° Schräglage ist n = 2 → √2 ≈ 1,41, also +41 %.",
+   "ref": "§2.9 / Aerodynamik"
+  },
+  {
+   "cat": "Überziehen",
+   "q": "Bei welcher Geschwindigkeit überzieht die Maschine mit STARTKLAPPEN (Geradeausflug, 750 kg)?",
+   "options": [
+    "39 KIAS",
+    "45 KIAS",
+    "49 KIAS",
+    "52 KIAS"
+   ],
+   "answer": "45 KIAS",
+   "exp": "Tab. 5.2.2: Startstellung Vs = 48 KCAS / 45 KIAS — liegt zwischen Landung (39 KIAS) und Reise/sauber (49 KIAS).",
+   "ref": "Tab. 5.2.2"
+  },
+  {
+   "cat": "Überziehen",
+   "q": "In einer stetigen 30°-Kurve im Reiseflug (sauber, Vs1 = 49 KIAS geradeaus) — bei welcher IAS überziehst du?",
+   "options": [
+    "49 KIAS",
+    "51 KIAS",
+    "55 KIAS",
+    "58 KIAS"
+   ],
+   "answer": "51 KIAS",
+   "exp": "A211-POH Tab. 5.2.2 (gemessen): sauber 0°=49, 30°=51, 45°=55, 60°>64 KIAS. Vs steigt mit der Schräglage über das Lastvielfache.",
+   "ref": "Tab. 5.2.2"
+  },
+  {
+   "cat": "Überziehen",
+   "q": "Im Landeanflug (Landeklappen, Vs0 = 39 KIAS geradeaus) — bei welcher IAS überziehst du in einer stetigen 30°-Kurve?",
+   "options": [
+    "39 KIAS",
+    "42 KIAS",
+    "46 KIAS",
+    "50 KIAS"
+   ],
+   "answer": "42 KIAS",
+   "exp": "A211-POH Tab. 5.2.2 (gemessen): Landung 0°=39, 30°=42, 45°=47, 60°>57 KIAS. Genau dieser schrumpfende Abstand macht die Base-to-Final-Kurve so gefährlich — koordiniert fliegen, Reserve halten.",
+   "ref": "Tab. 5.2.2",
+   "tip": "Die tödlichste Kurve der Fliegerei. Typischer Ablauf: Du überschießt in der Base die Verlängerung der Piste, willst mit <b>Seitenruder</b> „nachhelfen“ statt sauber zu kurven, ziehst dabei am Höhensteuer und wirst langsam. Der <b>schiebende, unkoordinierte Flug</b> lässt den kurveninneren Flügel zuerst überziehen — das Flugzeug kippt blitzartig nach innen und geht in Bodennähe ins <b>Trudeln</b>, aus dem keine Höhe zum Ausleiten bleibt. Dazu steigt Vs in der Kurve ohnehin (30° → +7 %). Gegenmittel: nicht hetzen, die Kurve nicht enger/steiler ziehen, <b>koordiniert</b> fliegen (Kugel mittig), Fahrtreserve halten — und bei Überschuss lieber <b>durchstarten</b> als in die enge Kurve zwingen."
+  },
+  {
+   "cat": "Betriebsgrenzen",
+   "q": "Wie viele Personen dürfen an Bord, und was gilt beim Alleinflug?",
+   "options": [
+    "Max. 2; Alleinflug nur vom linken Sitz",
+    "Max. 2; Alleinflug nur vom rechten Sitz",
+    "Max. 3; Sitz egal",
+    "Max. 2; Sitz egal"
+   ],
+   "answer": "Max. 2; Alleinflug nur vom linken Sitz",
+   "exp": "Max. Besatzung 2, Mindestbesatzung 1 Pilot. Einsitzig nur vom LINKEN Sitz — dort liegen Bugradsteuerung, Bremsen und die Hauptbedienung griffbereit.",
+   "ref": "§2.11 Flugbesatzung"
+  },
+  {
+   "cat": "Betriebsgrenzen",
+   "q": "Welche Betriebsarten und Manöver sind mit der A210 zulässig?",
+   "options": [
+    "DAY- und NIGHT-VFR; kein Kunstflug, kein absichtliches Trudeln, kein Flug in Vereisung",
+    "Nur DAY-VFR; Kunstflug erlaubt",
+    "IFR zugelassen",
+    "DAY-VFR inkl. absichtlichem Trudeln"
+   ],
+   "answer": "DAY- und NIGHT-VFR; kein Kunstflug, kein absichtliches Trudeln, kein Flug in Vereisung",
+   "exp": "Zugelassen: Sichtflug Tag UND Nacht. Verboten: Kunstflug, absichtliches Trudeln, Flug unter Vereisung. Überziehen nur als statisches Überziehen.",
+   "ref": "§2.9 / §2.12 / Placard 1"
+  },
+  {
+   "cat": "Betriebsgrenzen",
+   "q": "Welche Öldruck-Grenzwerte gelten neben dem Normalbereich (2,0–5,0 bar)?",
+   "options": [
+    "Min. 0,8 bar; max. 7,0 bar (Kaltstart, kurzzeitig)",
+    "Min. 1,5 bar; max. 6,0 bar",
+    "Min. 0,5 bar; max. 8,0 bar",
+    "Min. 1,0 bar; max. 5,0 bar"
+   ],
+   "answer": "Min. 0,8 bar; max. 7,0 bar (Kaltstart, kurzzeitig)",
+   "exp": "Untere rote Linie 0,8 bar (unter 1440 U/min), max. 7,0 bar kurzzeitig beim Kaltstart. Gelbe Warnbereiche: 0,8–2,0 und 5,0–7,0 bar.",
+   "ref": "§2.4 / §2.5"
+  },
+  {
+   "cat": "Elektrik",
+   "q": "Welchen Spannungsbereich zeigt der GRÜNE Bogen des Voltmeters (Normalbetrieb)?",
+   "options": [
+    "10–13 V",
+    "11–14 V",
+    "12–15 V",
+    "13–16 V"
+   ],
+   "answer": "12–15 V",
+   "exp": "Grün 12–15 V. Rot 8–11 V, rot/grün schraffiert 11–12 V (Warnung), rote Linie 15–16 V (Überspannung). Nadel jederzeit im ROTEN Bereich → nächsten Platz anfliegen, Fehler beheben.",
+   "ref": "§2.6 / §7.11.4"
+  },
+  {
+   "cat": "Systeme & Konfiguration",
+   "q": "Die Prandtl-Sonde (Pitot-Statik) liefert zwei Drücke. Welche Instrumente hängen am STATISCHEN Druck?",
+   "options": [
+    "Nur der Fahrtmesser",
+    "Fahrtmesser, Höhenmesser, Variometer und Höhenkodierer",
+    "Nur der Höhenmesser",
+    "Drehzahlmesser und Ladedruck"
+   ],
+   "answer": "Fahrtmesser, Höhenmesser, Variometer und Höhenkodierer",
+   "exp": "Der statische Druck versorgt Fahrtmesser, Höhenmesser, Variometer und Höhenkodierer; der Gesamt-(Stau-)druck nur den Fahrtmesser. Bei täglicher Kontrolle Staurohrschutz entfernen und Funktion prüfen.",
+   "ref": "§7.12 Stau-/Statiksystem",
+   "tip": "So „lügen“ die Instrumente je nach Verstopfung. <b>Pitot (Staudruck) verstopft, Statik frei:</b> Der Fahrtmesser wird zum <b>Höhenmesser</b> — im Steigflug zeigt er zu viel, im Sinkflug zu wenig; Höhenmesser und Vario arbeiten normal. <b>Statikport verstopft, Pitot frei:</b> Der <b>Höhenmesser friert</b> auf der Blockierhöhe ein, das <b>Vario zeigt null</b>, und der Fahrtmesser liest falsch — beim Steigen zu wenig, beim Sinken zu viel (also genau verkehrt zum Pitot-Fall). Eselsbrücke: Pitot-Block → Fahrtmesser verhält sich wie ein Höhenmesser; Statik-Block → die statikbasierten Instrumente stehen/spinnen. Häufigste Ursachen: Insekten, Eis, vergessener Staurohrschutz. Gegenmittel am Boden: Sonde sauber halten, Schutz abnehmen, Funktion prüfen; im Flug hilft die <b>Fluglage + Leistung</b> als unabhängige Referenz."
+  },
+  {
+   "cat": "Flugpraxis & Verfahren",
+   "q": "Warum ist ein Start bei hoher Dichtehöhe (heiß & hoch) besonders kritisch?",
+   "options": [
+    "Nur der Auftrieb sinkt",
+    "Gleich drei Effekte zusammen: weniger Auftrieb, weniger Motorleistung, schlechterer Propellerschub",
+    "Nur die Motorleistung sinkt",
+    "Die Dichtehöhe hat keinen Einfluss auf den Start"
+   ],
+   "answer": "Gleich drei Effekte zusammen: weniger Auftrieb, weniger Motorleistung, schlechterer Propellerschub",
+   "exp": "Dünne Luft wirkt dreifach: Flügel erzeugt weniger Auftrieb (höhere Abhebegeschwindigkeit über Grund), der Saugmotor leistet weniger, und der Propeller greift schlechter. Start- und Steigleistung verschlechtern sich überproportional.",
+   "ref": "§5.2.4 / §5.2.5 Flugplanung",
+   "tip": "„Density Altitude“ ist die Höhe, die sich das Flugzeug <b>anfühlt</b>, nicht die auf dem Höhenmesser. Hohe Temperatur, hoher Platz, hoher Luftdruck-Abfall und Feuchte lassen die Luft ausdünnen. Der Denkfehler ist, nur an „längere Startrolle“ zu denken — in Wahrheit schlagen <b>drei Ketten gleichzeitig</b> zu: (1) Der Flügel braucht für denselben Auftrieb mehr <b>wahre</b> Geschwindigkeit → du hebst bei höherer Groundspeed ab, die Rollstrecke wächst. (2) Der Saugmotor bekommt weniger Sauerstoff → weniger Leistung. (3) Der Propeller schiebt in dünner Luft schlechter → weniger Schub aus der ohnehin geringeren Leistung. Deshalb die A210-Flugplanung immer mit der <b>Dichtehöhe</b> rechnen (Druckhöhe + Temperaturkorrektur), konservative Diagrammwerte nehmen, und an heißen Tagen von kurzen/weichen Graspisten mit Reserve kalkulieren."
+  },
+  {
+   "cat": "Triebwerk",
+   "q": "Wie hoch ist die maximal zulässige Startdrehzahl der A211 und wie lange?",
+   "options": [
+    "2260 U/min dauerhaft",
+    "2385 U/min für max. 5 Minuten",
+    "2385 U/min dauerhaft",
+    "2600 U/min für 1 Minute"
+   ],
+   "answer": "2385 U/min für max. 5 Minuten",
+   "exp": "2385 U/min (73,5 kW) nur für max. 5 Minuten für Start/Steigflug — Drehzahlmesser liegt dann im gelben Bogen (2260–2385). Danach auf 2260 U/min (Dauer) zurück.",
+   "ref": "§2.4 / §4.5.7",
+   "tip": "Das 5-Minuten-Limit ist eine thermische Grenze, keine Willkür. Die 2385 U/min (73,5 kW) erzeugen deutlich mehr Abwärme als die Dauerleistung — Öl und besonders die Zylinderköpfe (A211: rote Linie schon bei <b>120 °C</b>!) brauchen Zeit, diese Wärme abzuführen. Deshalb: nach Start und Anfangssteigflug den <b>Propellerverstellhebel auf 2260 U/min</b> zurücknehmen, sobald Hindernisse frei sind. Der gelbe Drehzahlbogen (2260–2385) ist dein visuelles „Stoppuhr-Signal“: Er darf beim Start kurz betreten werden, ist im Reiseflug aber tabu. Merke die Leistungsreihenfolge: erhöhen zuerst Drehzahl, dann Ladedruck — reduzieren zuerst Ladedruck, dann Drehzahl. Und behalte die CHT im Auge, denn bei hoher Last und niedriger Fahrt (steiler Steigflug, heißer Tag) klettert sie am schnellsten."
+  },
+  {
+   "cat": "Elektrik",
+   "q": "Wie ist die Stromversorgung der A211 (N/VFR) aufgebaut?",
+   "options": [
+    "Ein Generator + Batterie",
+    "Zwei Alternatoren (ALT 1 extern + ALT 2 intern) + Batterie",
+    "Nur Batterie",
+    "Zwei Batterien ohne Alternator"
+   ],
+   "answer": "Zwei Alternatoren (ALT 1 extern + ALT 2 intern) + Batterie",
+   "exp": "A211 hat zwei unabhängige Alternatoren — ALT 1 (extern, 40 A) und ALT 2 (integriert im ROTAX). Bei D/VFR und N/VFR sind IMMER beide in Betrieb (Redundanz für Nachtflug). Die A210 hat nur einen Generator.",
+   "ref": "§7.14.1",
+   "tip": "Die zwei Alternatoren sind der Kern der N/VFR-Zulassung: Fällt einer aus, trägt der andere das Bordnetz weiter. Deshalb gibt es beim Vor-dem-Rollen-Check einen eigenen ALT-Test (ALT 1 aus → Entladung, ALT 2 ziehen → Reaktion prüfen). Fallen BEIDE aus, zeigt die Warnleuchte SPANNUNG den Beginn der ~30 min Batteriereserve an — innerhalb dieser Zeit landen. Wichtig: Die Zündung hängt an keinem von beiden, sie läuft über den internen Zündgenerator des ROTAX weiter."
+  },
+  {
+   "cat": "Betriebsgrenzen",
+   "q": "Wie hoch ist die maximale Betriebshöhe der A211?",
+   "options": [
+    "10.000 ft",
+    "12.500 ft",
+    "14.500 ft",
+    "18.000 ft"
+   ],
+   "answer": "14.500 ft",
+   "exp": "Maximale Betriebshöhe 14.500 ft (§2.15). Darüber wäre ohnehin Sauerstoff erforderlich.",
+   "ref": "§2.15"
+  },
+  {
+   "cat": "Kühlung & Kühlerabdeckung",
+   "q": "Ab welcher Außentemperatur ist die (optionale) Pitotrohrheizung der A211 auszuschalten?",
+   "options": [
+    "über +5 °C",
+    "über +10 °C",
+    "über +15 °C",
+    "über +25 °C"
+   ],
+   "answer": "über +15 °C",
+   "exp": "Schalter P/S-Heat AUS bei OAT über +15 °C. Wichtig: Auch MIT beheiztem Pitotrohr ist die A211 NICHT für Flüge unter Vereisungsbedingungen zugelassen.",
+   "ref": "§7.15.1"
+  }
+ ]
+};
+let activeMuster = 'A210';
+let QUESTIONS = QUESTION_SETS[activeMuster];
+
+/* =====================================================================
+   A210 NOTVERFAHREN — Abschnitt 3 (FM-AT01-1010-100, B.12)
+   Schritte faithful zum POH; c = Bedienelement/Bedingung, a = Aktion.
+   ===================================================================== */
+const EMERGENCIES = [
+/* ---- TRIEBWERK ---- */
+{id:"eng-takeoff", grp:"Triebwerk", crit:true, title:"Triebwerksstörung im Startlauf",
+ sit:"Leistungsverlust noch auf der Bahn, vor dem Abheben.",
+ steps:[{c:"Leistungshebel",a:"LEERLAUF",sofort:true},{c:"Fußbremse",a:"nach Verhältnissen"}],
+ merke:"Startabbruch. Solange am Boden: Gas raus, bremsen — kein Rettungsversuch in die Luft.", ref:"3.3.1"},
+{id:"eng-climb", grp:"Triebwerk", crit:true, title:"Leistung im Steigflug ungenügend",
+ sit:"Im Steigflug liefert der Motor nicht die volle Leistung.",
+ steps:[{c:"Leistungshebel",a:"VOLLGAS"},{c:"Elektrische Kraftstoffpumpe",a:"EIN"},{c:"Fluggeschwindigkeit (IAS)",a:"70 kts"},{c:"Propellerverstellhebel",a:"STARTSTELLUNG"},{c:"Brandhahn",a:"wenn Tank leer → auf vollen Tank"},{c:"Choke",a:"AUS"},{c:"Vergaservorwärmung",a:"EIN"},{c:"Zündschalter",a:"BOTH"},{c:"Keine Wiederherstellung → Notlandung",a:"kurz vor Landung: Brandhahn OFF · Zündung OFF · Batterie AUS",warn:true}],
+ merke:"Erst alle Leistungsquellen durchgehen (Sprit, Zündung, Gemisch). Achtung: Batterie AUS = keine Überziehwarnung mehr.", ref:"3.3.2 A"},
+{id:"eng-rough", grp:"Triebwerk", title:"Rauh laufendes Triebwerk",
+ sit:"Der Motor läuft unruhig oder stottert im Reiseflug.",
+ steps:[{c:"Vergaservorwärmung",a:"EIN",sofort:true},{c:"Elektrische Kraftstoffpumpe",a:"EIN"},{c:"Zündschalter",a:"L-BOTH / R-BOTH durchschalten"},{c:"Leistungshebel",a:"Einstellung beibehalten"},{c:"Keine Besserung → Leistungshebel",a:"auf minimal erforderliche reduzieren"},{c:"",a:"Sicherheitslandung durchführen",warn:true}],
+ merke:"Vergaservorwärmung zuerst — Vereisung ist die wahrscheinlichste Ursache für rauen Lauf.", ref:"3.3.3 A"},
+{id:"eng-oil", grp:"Triebwerk", crit:true, title:"Abfall des Öldruckes",
+ sit:"Der Öldruck fällt unter den grünen Bereich.",
+ steps:[{c:"Öltemperatur",a:"PRÜFEN",sofort:true},{c:"Öltemp NORMAL",a:"Landung auf nächstem Flugplatz"},{c:"Öltemp STEIGEND",a:"Leistung minimal reduzieren → Sicherheitslandung — Motorausfall kann unmittelbar eintreten!",warn:true}],
+ merke:"Die Öltemperatur entscheidet über die Dringlichkeit: normal = kontrolliert weiterfliegen, steigend = akuter Notfall.", ref:"3.3.3 B"},
+{id:"eng-fuel", grp:"Triebwerk", crit:true, title:"Abfall des Kraftstoffdruckes",
+ sit:"Die Kraftstoffdruck-Warnleuchte kommt (< 0,15 bar).",
+ steps:[{c:"Elektrische Kraftstoffpumpe",a:"EIN",sofort:true},{c:"Tankanzeige / Brandhahn",a:"wenn Tank leer → auf vollen Tank"},{c:"Elektrische Kraftstoffpumpe",a:"EIN (prüfen)"},{c:"Warnleuchte erlischt nicht",a:"Landung auf nächstem Flugplatz — Motorausfall kann unmittelbar eintreten!",warn:true}],
+ merke:"Erst Pumpe, dann Tank. Nach dem Umschalten auf den vollen Tank ~8 sec bis wieder voller Druck anliegt.", ref:"3.3.3 C"},
+{id:"eng-restart-prop", grp:"Triebwerk", title:"Wiederanlassen — Propeller steht",
+ sit:"Motor ausgefallen, Propeller steht still.",
+ steps:[{c:"Elektrische Verbraucher",a:"AUS"},{c:"Batterieschalter",a:"EIN"},{c:"Propellerverstellung",a:"STARTSTELLUNG"},{c:"Brandhahn",a:"wenn Tank leer → auf vollen Tank"},{c:"Elektr. Kraftstoffpumpe",a:"EIN"},{c:"Leistungshebel",a:"warm: 2 cm vor · kalt: LEERLAUF"},{c:"Choke",a:"warm: AUS · kalt: EIN"},{c:"Zündschalter",a:"BOTH"},{c:"Startschalter",a:"START"},{c:"Nach Anlassen",a:"Öldruck prüfen · Choke AUS · Verbraucher n. Bedarf · Öltemp prüfen"}],
+ merke:"Alternative: Andrücken auf ca. 120 kts startet per Windmilling (Höhenverlust ~1000 ft / 300 m).", ref:"3.3.3 D"},
+{id:"eng-restart-wm", grp:"Triebwerk", title:"Wiederanlassen — Windmilling",
+ sit:"Motor aus, Propeller dreht (Fahrt > 60 kts).",
+ steps:[{c:"Fluggeschwindigkeit (IAS)",a:"76 kts"},{c:"Batterieschalter",a:"EIN"},{c:"Brandhahn",a:"wenn Tank leer → auf vollen Tank"},{c:"Propellerverstellung",a:"STARTSTELLUNG"},{c:"Elektr. Kraftstoffpumpe",a:"EIN"},{c:"Zündschalter",a:"BOTH"},{c:"Leistungshebel",a:"warm: 2 cm vor · kalt: LEERLAUF"},{c:"Choke",a:"warm: AUS · kalt: EIN"},{c:"Nach Anlassen",a:"Öldruck prüfen · Choke AUS · Verbraucher n. Bedarf · Öltemp prüfen"}],
+ merke:"Kein Startschalter nötig — der windmillende Propeller dreht den Motor selbst an.", ref:"3.3.3 E"},
+{id:"eng-forced", grp:"Triebwerk", crit:true, title:"Notlandung mit stehendem Triebwerk",
+ sit:"Motor endgültig aus, Landung unvermeidbar.",
+ steps:[{c:"Fluggeschwindigkeit (IAS)",a:"Landung 60 · Start 65 · Reise 70 kts",sofort:true},{c:"Brandhahn",a:"OFF"},{c:"Zündschalter",a:"OFF"},{c:"Sicherheitsgurte",a:"fest angezogen"},{c:"Funkgerät",a:"Positions- und Sicherheitsmeldung"},{c:"Batterieschalter",a:"AUS"}],
+ merke:"Zuerst die Gleitgeschwindigkeit sichern. Batterie AUS erst spät — danach gibt es keine Überziehwarnung mehr.", ref:"3.3.4 A"},
+
+/* ---- FEUER & RAUCH ---- */
+{id:"fire-eng-gnd", grp:"Feuer & Rauch", crit:true, title:"Triebwerksbrand am Boden",
+ sit:"Feuer im Motorraum, Flugzeug am Boden.",
+ steps:[{c:"Brandhahn",a:"OFF",sofort:true},{c:"Leistungshebel",a:"VOLLGAS"},{c:"Batterieschalter",a:"AUS"},{c:"Zündschalter",a:"OFF"},{c:"",a:"Flugzeug unmittelbar verlassen",warn:true}],
+ merke:"Vollgas zieht den Restsprit aus der Leitung in den Motor. Danach sofort raus.", ref:"3.5.1"},
+{id:"fire-eng-flt", grp:"Feuer & Rauch", crit:true, title:"Triebwerksbrand im Flug",
+ sit:"Feuer im Motorraum während des Fluges.",
+ steps:[{c:"Brandhahn",a:"OFF",sofort:true},{c:"Fluggeschwindigkeit (IAS)",a:"90 kts"},{c:"Landeklappen",a:"Startstellung"},{c:"Leistungshebel",a:"VOLLGAS"},{c:"Kabinenheizung",a:"AUS"},{c:"Seitenfenster",a:"AUF"},{c:"",a:"Notlandung mit stehendem Triebwerk (3.3.4 A)",warn:true}],
+ merke:"Sprit absperren, Motor leerfahren, Rauch aus der Kabine, dann kontrolliert runter.", ref:"3.5.2"},
+{id:"fire-el-gnd", grp:"Feuer & Rauch", crit:true, title:"Elektrischer Brand am Boden",
+ sit:"Rauch/Brand elektrischen Ursprungs, am Boden.",
+ steps:[{c:"Batterieschalter",a:"AUS",sofort:true},{c:"Läuft der Motor → Leistungshebel",a:"LEERLAUF"},{c:"Brandhahn",a:"OFF"},{c:"Zündschalter",a:"OFF"},{c:"Kabinenhaube",a:"ÖFFNEN"},{c:"Feuerlöscher (falls vorhanden)",a:"nach Bedarf einsetzen"}],
+ merke:"Strom weg nimmt der Quelle die Energie.", ref:"3.5.3"},
+{id:"fire-el-flt", grp:"Feuer & Rauch", crit:true, title:"Elektrischer Brand im Flug",
+ sit:"Rauchentwicklung elektrischen Ursprungs im Flug.",
+ steps:[{c:"Batterieschalter",a:"AUS",sofort:true},{c:"Kabinenbelüftung",a:"AUF"},{c:"Seitenfenster",a:"AUF"},{c:"Feuerlöscher (falls vorhanden)",a:"einsetzen, wenn Rauch weiter anhält"}],
+ merke:"Batterie trennt die Quelle vom Strom. Frischluft schafft Sicht und atembare Luft.", ref:"3.5.4"},
+{id:"fire-cabin", grp:"Feuer & Rauch", crit:true, title:"Kabinenbrand im Flug",
+ sit:"Feuer/Rauch in der Kabine.",
+ steps:[{c:"Batterieschalter",a:"AUS",sofort:true},{c:"Kabinenbelüftung",a:"AUF"},{c:"Kabinenheizung",a:"AUS"},{c:"Feuerlöscher (falls vorhanden)",a:"nach Bedarf einsetzen"},{c:"Wenn erforderlich",a:"Sicherheitslandung vorbereiten"}],
+ merke:"Kabinenheizung AUS trennt eine mögliche Wärmequelle und stoppt Zuluft aus dem Motorraum.", ref:"3.5.5"},
+
+/* ---- FLUGZUSTAND ---- */
+{id:"spin", grp:"Flugzustand", crit:true, title:"Beenden des Trudelns",
+ sit:"Das Flugzeug ist ins Trudeln geraten.",
+ steps:[{c:"Seitensteuer",a:"Vollausschlag GEGEN die Trudelrichtung",sofort:true},{c:"Leistungshebel",a:"LEERLAUF"},{c:"Höhensteuer",a:"neutral bis leicht gedrückt"},{c:"Seitensteuer",a:"neutral, sobald die Drehung endet"},{c:"Quersteuer",a:"neutral"},{c:"Landeklappen",a:"EIN / Reisestellung, falls ausgefahren"}],
+ merke:"Reihenfolge zählt: Gegenseitenruder → Gas raus → Höhenruder nach. Querruder bleibt neutral, sonst vertieft es das Trudeln.", ref:"3.7"},
+{id:"icing", grp:"Flugzustand", title:"Flug unter Vereisungsbedingungen",
+ sit:"Unbeabsichtigtes Einfliegen in eine Vereisungszone.",
+ steps:[{c:"Vergaservorwärmung",a:"EIN",sofort:true},{c:"Propellereinstellung",a:"Drehzahl erhöhen"},{c:"Kabinenheizung",a:"EIN"},{c:"Vereisungsgebiet",a:"sofort verlassen (Höhe ändern / Umkehrkurs)"},{c:"Ruder",a:"ständig bewegen, um Gängigkeit zu erhalten"}],
+ merke:"Eis an der Flügelvorderkante erhöht Vs und verfälscht Fahrtmesser, Höhenmesser, Vario und Überziehwarnung.", ref:"3.6"},
+{id:"safe-landing", grp:"Flugzustand", title:"Sicherheitslandung",
+ sit:"Weiterflug wäre gefährlich — Landung vor dem nächsten Platz nötig (Motor läuft noch).",
+ steps:[{c:"Landefeld",a:"wählen: Wind, Hindernisse, Gefälle"},{c:"Sicherheitsgurte",a:"fest angezogen"},{c:"",a:"Sinkflug einleiten"},{c:"Feld > 500 ft überfliegen",a:"Beschaffenheit prüfen"},{c:"Endanflug-Check",a:"Prop STARTSTELLUNG · Vergaservorw. EIN · el. Pumpe EIN · Klappen Landung · IAS 60 kts"},{c:"Aufsetzen",a:"mit Mindestgeschwindigkeit"},{c:"Nach Aufsetzen",a:"Bremsen · Brandhahn OFF · Zündung OFF · Batterie AUS"}],
+ merke:"Motor läuft noch = du hast Zeit. Feld erst inspizieren, dann den Check fliegen, langsam aufsetzen.", ref:"3.4"},
+{id:"tire", grp:"Flugzustand", title:"Landung mit defektem Reifen",
+ sit:"Defekter Reifen nach dem Start vermutet.",
+ steps:[{c:"Landeklappen",a:"Landestellung"},{c:"Aufsetzpunkt",a:"an der dem defekten Reifen GEGENÜBERLIEGENDEN Bahnseite"},{c:"Aufsetzen",a:"leichter Hängewinkel zum intakten Reifen; Bugrad schnell an den Boden"},{c:"Querruder",a:"voll in Richtung des intakten Reifens rollen"},{c:"Bei defektem Bugrad",a:"Mindestfahrt, Bugrad so lange wie möglich entlasten"}],
+ merke:"Auf der Seite des GESUNDEN Reifens abstützen — so bleibt die volle Bahnbreite zum Auskorrigieren.", ref:"3.9"},
+
+/* ---- SYSTEME ---- */
+{id:"elec-total", grp:"Systeme", title:"Totaler Stromausfall",
+ sit:"Kompletter Ausfall der elektrischen Anlage.",
+ steps:[{c:"Sicherung der Batterie",a:"DRÜCKEN, wenn herausgesprungen"},{c:"Batterieschalter",a:"PRÜFEN, ob EIN"},{c:"Nicht behebbar",a:"Landung auf nächstgelegenem Flugplatz"}],
+ merke:"Erst die einfachen Ursachen (Sicherung, Schalterstellung) — dann landen.", ref:"3.10.1"},
+{id:"gen-fail", grp:"Systeme", title:"Generatorausfall",
+ sit:"GENERATOR-Warnleuchte leuchtet.",
+ steps:[{c:"GENERATOR-Schalter",a:"AUS – EIN durchschalten"},{c:"Generatorsicherung",a:"drücken, wenn herausgesprungen"},{c:"Leuchtet weiter → alle Verbraucher",a:"AUS (Beleuchtung · Landescheinw. · ACL · NAV · 12V-Buchse)"},{c:"Volt-/Amperemeter",a:"beobachten"},{c:"",a:"Landung auf nächstem Flugplatz"}],
+ merke:"Batteriekapazität ~90 min bei 8 A Entnahme — jeder abgeschaltete Verbraucher streckt die verbleibende Zeit.", ref:"3.10.2"},
+{id:"undervolt", grp:"Systeme", title:"Unterspannung im Flug",
+ sit:"Voltmeter-Nadel im grün/rot schraffierten Bereich oder darunter.",
+ steps:[{c:"Nicht benötigte Verbraucher",a:"abschalten, bis die Nadel im GRÜNEN Bereich ist"},{c:"Bleibt schraffiert + Amperemeter Entladung",a:"Generator defekt → nach 3.10.2 verfahren"}],
+ merke:"Voltmeter-Nadel jemals im ROTEN Bereich → nächsten Platz anfliegen und Fehler beheben.", ref:"3.10.3 B"},
+{id:"flaps", grp:"Systeme", title:"Störung Landeklappensystem",
+ sit:"Fehler in Positionsanzeige oder Antrieb der Landeklappen.",
+ steps:[{c:"Sicherung Landeklappenantrieb",a:"drücken, falls herausgesprungen"},{c:"Klappenstellung",a:"per Sichtprüfung am linken Tragflügel"},{c:"Fluggeschwindigkeit",a:"im WEISSEN Bereich wählen"},{c:"Landeklappenschalter",a:"in allen Stellungen rasten"},{c:"Antrieb fährt nicht",a:"Anflug mit sicherer Fahrt gemäß verfügbarer Klappenstellung"}],
+ merke:"Ohne gesetzte Klappe steigen Überziehgeschwindigkeit und Landestrecke — mehr Fahrt, längere Bahn einplanen.", ref:"3.11"},
+{id:"trim-stuck", grp:"Systeme", title:"Trimmung fährt nicht",
+ sit:"Die elektrische Trimmung reagiert nicht.",
+ steps:[{c:"Sicherung „Trimm-Motor“",a:"drücken, falls herausgesprungen"},{c:"Trimmschalter",a:"abwechselnd in beide Richtungen drücken"},{c:"",a:"Landung auf nächstem Flugplatz"}],
+ merke:"Voller Höhenruder-Steuerbereich bleibt — aber mit erhöhten Knüppelkräften bis ~10 kg rechnen.", ref:"3.12.1"},
+{id:"trim-runaway", grp:"Systeme", crit:true, title:"Trimmung läuft davon",
+ sit:"Die Trimmung verstellt sich unkontrolliert.",
+ steps:[{c:"Steuerknüppel",a:"fest in Position halten",sofort:true},{c:"Sicherung „Trimm-Motor“",a:"ZIEHEN"},{c:"Trimmschalter",a:"prüfen (gedrückt / verklemmt?)"},{c:"Problem lösbar",a:"Sicherung wieder drücken"},{c:"Nicht behebbar",a:"Landung auf nächstem Flugplatz"}],
+ merke:"Voll schwanz- zu voll kopflastig dauert ~8 sec — deshalb Knüppel sofort festhalten, dann Sicherung ziehen.", ref:"3.12.2"},
+{id:"avionics", grp:"Systeme", title:"Totaler Avionikausfall",
+ sit:"Komplettausfall der Avionik.",
+ steps:[{c:"Avionik-Hauptschalter",a:"AUS – EIN schalten (ist ein Sicherungsschalter)"},{c:"Springt wieder auf AUS",a:"Landung auf nächstem geeigneten Flugplatz"}],
+ merke:"Der Hauptschalter ist gleichzeitig die Sicherung — ein erneutes Auslösen zeigt den bleibenden Fehler an.", ref:"3.13.1"}
+];
+
+
+const GLOSSARY = [{"g": "Geschwindigkeiten", "a": "IAS", "t": "Indicated Airspeed", "d": "Angezeigte Geschwindigkeit am Fahrtmesser."}, {"g": "Geschwindigkeiten", "a": "KIAS", "t": "IAS in Knoten", "d": "Angezeigte Geschwindigkeit, in Knoten abgelesen."}, {"g": "Geschwindigkeiten", "a": "CAS", "t": "Calibrated Airspeed", "d": "Um Einbau- und Instrumentenfehler berichtigte IAS; entspricht in MSL/ISA der TAS."}, {"g": "Geschwindigkeiten", "a": "KCAS", "t": "CAS in Knoten", "d": "Kalibrierte Geschwindigkeit in Knoten."}, {"g": "Geschwindigkeiten", "a": "TAS", "t": "True Airspeed", "d": "Wahre Geschwindigkeit gegenüber der Luft — CAS berichtigt um Höhe und Temperatur."}, {"g": "Geschwindigkeiten", "a": "GS", "t": "Ground Speed", "d": "Geschwindigkeit über Grund (TAS ± Wind)."}, {"g": "Geschwindigkeiten", "a": "VA", "t": "Manövergeschwindigkeit", "d": "112 kt. Oberhalb keine vollen/abrupten Ruderausschläge — Überlastungsgefahr. Sinkt bei geringerer Masse."}, {"g": "Geschwindigkeiten", "a": "VS", "t": "Überziehgeschwindigkeit", "d": "Überziehgeschwindigkeit ohne Leistung in der jeweiligen Konfiguration."}, {"g": "Geschwindigkeiten", "a": "VS0", "t": "Überziehgeschw. Landekonfiguration", "d": "Überziehgeschwindigkeit ohne Leistung mit Landeklappen (Markierung weißer Bogen unten)."}, {"g": "Geschwindigkeiten", "a": "VX", "t": "Bester Steigwinkel", "d": "52 kt in MSL. Steilster Höhengewinn pro Strecke — fürs Hindernis."}, {"g": "Geschwindigkeiten", "a": "VY", "t": "Bestes Steigen", "d": "65 kt in MSL (nimmt mit Höhe ab). Schnellster Höhengewinn pro Zeit."}, {"g": "Geschwindigkeiten", "a": "VFE", "t": "Max. mit Klappen", "d": "90 kt. Höchstgeschwindigkeit mit ausgefahrenen Landeklappen (T/O oder LDG)."}, {"g": "Geschwindigkeiten", "a": "VNO", "t": "Max. Reisegeschwindigkeit", "d": "130 kt = Beginn gelber Bogen. Nur in ruhiger Luft und mit Vorsicht überschreiten."}, {"g": "Geschwindigkeiten", "a": "VNE", "t": "Never Exceed", "d": "165 kt (rote Linie). Darf in keiner Betriebsart überschritten werden."}, {"g": "Masse & Schwerpunkt", "a": "BE", "t": "Bezugsebene", "d": "Vertikalebene an der Flügelvorderkante (Trennstelle zum Rumpf), von der alle Hebelarme gemessen werden."}, {"g": "Masse & Schwerpunkt", "a": "BL", "t": "Bezugslinie", "d": "Festgelegte horizontale Referenzlinie für die Wägung."}, {"g": "Masse & Schwerpunkt", "a": "Hebelarm", "t": "Lever Arm", "d": "Horizontaler Abstand des Schwerpunkts eines Bauteils von der BE."}, {"g": "Masse & Schwerpunkt", "a": "Moment", "t": "Moment", "d": "Produkt aus Masse und Hebelarm eines Bauteils."}, {"g": "Masse & Schwerpunkt", "a": "MTOW", "t": "Max. Startmasse", "d": "750 kg. Höchstzulässige Masse für den Start."}, {"g": "Masse & Schwerpunkt", "a": "MLW", "t": "Max. Landemasse", "d": "750 kg. Bei der Aquila identisch mit MTOW."}, {"g": "Masse & Schwerpunkt", "a": "MZFW", "t": "Leermasse", "d": "Masse inkl. Öl, Kühlwasser und nicht-ausfliegbarem Treibstoff. Siehe Wägebericht."}, {"g": "Masse & Schwerpunkt", "a": "Zuladung", "t": "Payload", "d": "Differenz zwischen Abflugmasse und Leermasse."}, {"g": "Masse & Schwerpunkt", "a": "CG / SP", "t": "Schwerpunkt", "d": "Gleichgewichtspunkt. Zulässig 0,427–0,523 m hinter BE (31–40 % MAC)."}, {"g": "Masse & Schwerpunkt", "a": "MAC", "t": "Mean Aerodynamic Chord", "d": "Mittlere aerodynamische Flügeltiefe = 1,07 m. Bezug für CG-Prozentangaben."}, {"g": "Meteorologie", "a": "ISA", "t": "Internationale Standardatmosphäre", "d": "15 °C und 1013,25 hPa in MSL; Bezug für alle Leistungsdaten."}, {"g": "Meteorologie", "a": "MSL", "t": "Mean Sea Level", "d": "Höhe über dem Meeresspiegel."}, {"g": "Meteorologie", "a": "OAT", "t": "Outside Air Temperature", "d": "Außenlufttemperatur."}, {"g": "Meteorologie", "a": "SAT", "t": "Static Air Temperature", "d": "Statische Lufttemperatur — entspricht OAT."}, {"g": "Meteorologie", "a": "QNH", "t": "Luftdruck auf Meeresniveau", "d": "Auf MSL reduzierter Ortsdruck; eingestellt zeigt der Höhenmesser die Höhe über MSL."}, {"g": "Meteorologie", "a": "VFR Tag", "t": "D/VFR", "d": "Sichtflug am Tag (Beginn bürgerl. Morgen- bis Ende bürgerl. Abenddämmerung)."}, {"g": "Meteorologie", "a": "VFR Nacht", "t": "N/VFR", "d": "Sichtflug bei Nacht. Nur A211 (AT01-100B) zugelassen; erfordert u. a. zweiten Alternator."}, {"g": "Triebwerk & Leistung", "a": "TOP", "t": "Startleistung (Take-Off Power)", "d": "Höchstzulässige Motorleistung für den Start. A210: 69 kW · A211: 73,5 kW (max. 5 min)."}, {"g": "Triebwerk & Leistung", "a": "MCP", "t": "Max. Dauerleistung", "d": "Höchste dauerhaft zugelassene Leistung = 69 kW bei 2260 U/min."}, {"g": "Triebwerk & Leistung", "a": "MP", "t": "Manifold Pressure", "d": "Ladedruck. Beim Erhöhen zuerst Drehzahl, dann MP; beim Senken umgekehrt."}, {"g": "Triebwerk & Leistung", "a": "RPM", "t": "Revolutions per Minute", "d": "Propellerdrehzahl (Untersetzung 2,43:1). Grün bis 2260 U/min."}, {"g": "Triebwerk & Leistung", "a": "FF", "t": "Fuel Flow", "d": "Treibstoffverbrauch pro Stunde (l/h) laut Reiseflugtabelle."}, {"g": "Triebwerk & Leistung", "a": "CHT", "t": "Cylinder Head Temperature", "d": "Zylinderkopftemperatur. Max A210: 135 °C · A211: 120 °C (129 bei altem Kopf Zyl. 3)."}, {"g": "Konfiguration", "a": "UP", "t": "Landeklappe Reisestellung", "d": "Klappen eingefahren (0°)."}, {"g": "Konfiguration", "a": "T/O", "t": "Landeklappe Startstellung", "d": "Startklappe (17°)."}, {"g": "Konfiguration", "a": "LDG", "t": "Landeklappe Landestellung", "d": "Landeklappe (35°)."}, {"g": "Avionik & Elektrik", "a": "PFD", "t": "Primary Flight Display", "d": "Primäres Fluglagedisplay (Garmin G500/G500 TXi bei der A211)."}, {"g": "Avionik & Elektrik", "a": "MFD", "t": "Multifunktions-Display", "d": "Multifunktionsanzeige (Karte, Motordaten) auf der GDU."}, {"g": "Avionik & Elektrik", "a": "GDU", "t": "Garmin Display Unit", "d": "Anzeigeeinheit, in der PFD und MFD zusammengefasst sind."}, {"g": "Avionik & Elektrik", "a": "AHRS", "t": "Attitude & Heading Reference System", "d": "Fluglage- und Kursreferenz. Ausfall → rotes X + „AHRS FAILURE“ im PFD."}, {"g": "Avionik & Elektrik", "a": "ADC", "t": "Air Data Computer", "d": "Luftdatenrechner (Geschwindigkeit, Höhe, TAS, OAT)."}, {"g": "Avionik & Elektrik", "a": "AI", "t": "Attitude Indicator", "d": "Künstlicher Horizont (bei N/VFR als Standby mit eigenem Akku, z. B. Garmin G5)."}, {"g": "Avionik & Elektrik", "a": "CB", "t": "Circuit Breaker", "d": "Sicherungsautomat. Ausgelöst nur einmal zurücksetzen, wenn flugnotwendig."}, {"g": "Avionik & Elektrik", "a": "ALT 1 / ALT 2", "t": "Alternatoren", "d": "A211: zwei Alternatoren (ALT 1 extern, ALT 2 intern), bei D/VFR und N/VFR stets beide aktiv."}, {"g": "Avionik & Elektrik", "a": "ACL", "t": "Anti-Collision Light", "d": "Zusammenstoß-Warnlicht (im Winglet integriert)."}, {"g": "Avionik & Elektrik", "a": "ELT", "t": "Emergency Locator Transmitter", "d": "Notsender (121,5 MHz / 406). Lage im Flug prüfen."}, {"g": "Avionik & Elektrik", "a": "P/S Heat", "t": "Pitot/Static Heat", "d": "Pitotrohrheizung (optional A211). AUS bei OAT > 15 °C. Keine Vereisungszulassung."}, {"g": "Avionik & Elektrik", "a": "ATC", "t": "Air Traffic Control", "d": "Flugverkehrskontrolle."}, {"g": "Avionik & Elektrik", "a": "COM / NAV", "t": "Communication / Navigation", "d": "Funk- und Navigationsgeräte im Mittelteil des Panels."}, {"g": "Werkstoffe", "a": "GfK", "t": "Glasfaserverstärkter Kunststoff", "d": "Hauptbaustoff der Zelle."}, {"g": "Werkstoffe", "a": "CfK", "t": "Kohlefaserverstärkter Kunststoff", "d": "Lokale Verstärkungen (Holme, Stringer, Überrollbügel)."}, {"g": "Werkstoffe", "a": "AS", "t": "AQUILA Supplement", "d": "Flughandbuch-Ergänzung (z. B. AS-00 Winterbetrieb, AS-05 N/VFR)."}];
+
+function renderGlossary(filter){
+  const body=el('gloss-body'); if(!body) return;
+  const f=(filter||'').trim().toLowerCase();
+  const list = f ? GLOSSARY.filter(e=>(e.a+' '+e.t+' '+e.d).toLowerCase().includes(f)) : GLOSSARY;
+  if(!list.length){ body.innerHTML='<div class="gloss-none">Kein Treffer für \u201E'+filter+'\u201C.</div>'; return; }
+  const groups=[...new Set(list.map(e=>e.g))];
+  let html='';
+  groups.forEach(g=>{
+    html+='<div class="gloss-group"><div class="gloss-grouphead mono">'+g.toUpperCase()+'</div>';
+    list.filter(e=>e.g===g).forEach(e=>{
+      html+='<div class="gentry"><div class="abbr">'+e.a+'<span class="term">'+e.t+'</span></div><div class="def">'+e.d+'</div></div>';
+    });
+    html+='</div>';
+  });
+  body.innerHTML=html;
+}
+function openGlossary(){ const se=el('gloss-search'); if(se) se.value=''; renderGlossary(''); show('gloss'); }
+
+
+/* ===================== RECHEN-TRAINER (Modus 04) ===================== */
+function _r(min,max,step){ step=step||1; const n=Math.floor((max-min)/step)+1; return min+step*Math.floor(Math.random()*n); }
+function _pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+function _de(x){ return String(x).replace('.',','); }               // deutsche Dezimalkomma
+function _round(x,d){ const p=Math.pow(10,d||0); return Math.round(x*p)/p; }
+function _uniq4(ans, cands){
+  const out=[ans];
+  for(const c of cands){ if(out.length>=4) break; if(out.indexOf(c)===-1) out.push(c); }
+  let k=1;
+  while(out.length<4){ const alt=ans.replace(/[0-9]+/, m=>String(Number(m)+k)); if(out.indexOf(alt)===-1) out.push(alt); k++; if(k>40) break; }
+  return out;
+}
+const RECHEN_GENERATORS = [
+ // 1) Überziehen in der Kurve
+ function(){
+   const cfg=_pick([['sauber (UP)',49],['Startklappen (T/O)',45],['Landeklappen (LDG)',39]]);
+   const bank=_pick([30,45,60]);
+   const fac={30:1.074,45:1.189,60:1.414};
+   const vs=cfg[1], ans=Math.round(vs*fac[bank]);
+   const d=[Math.round(vs*fac[30]),Math.round(vs*fac[45]),Math.round(vs*fac[60]),vs].filter(v=>v!==ans);
+   return {cat:"Rechnen · Überziehen",
+     q:"Vs in "+cfg[0]+" beträgt geradeaus "+vs+" KIAS. Bei welcher IAS überziehst du in einer stetigen "+bank+"°-Kurve?",
+     options:_uniq4(ans+" KIAS", d.map(v=>v+" KIAS")), answer:ans+" KIAS",
+     exp:"Vs steigt mit der Wurzel des Lastvielfachen n = 1/cos(φ). Bei "+bank+"°: n = "+_de(_round(1/Math.cos(bank*Math.PI/180),2))+", √n = "+_de(_round(Math.sqrt(1/Math.cos(bank*Math.PI/180)),3))+". "+vs+" × "+_de(_round(Math.sqrt(1/Math.cos(bank*Math.PI/180)),3))+" ≈ "+ans+" KIAS.",
+     ref:"Aerodynamik / Tab. 5.2.2"};
+ },
+ // 2) Gleitstrecke (Kopfrechnen: 1000 ft ≈ 4 km)
+ function(){
+   const alt=_pick([1000,2000,3000,4000,5000,6000]);
+   const th=alt/1000;            // Tausender Fuß
+   const km=th*4;                // POH-Faustregel, feldtauglich & konservativ
+   const d=[ (th*3)+" km", (th*5)+" km", _de(_round(alt*0.3048*14/1000,1))+" km" ];
+   return {cat:"Rechnen · Gleitflug",
+     q:"Triebwerksausfall in "+alt+" ft über Grund, Windstille, sichere Gleitzahl 14. Welche Strecke (km) kannst du maximal gleiten?",
+     options:_uniq4(km+" km", d), answer:km+" km",
+     exp:"Faustregel (POH): 1000 ft ≈ 4 km. Also "+th+" × 4 = "+km+" km — im Kopf, OHNE Meter-Umrechnung. Genau das zählt im Notfall: schnell und konservativ. (Gegen-/Rückenwind verändert die Strecke deutlich.)",
+     ref:"§3.8 Gleitflug"};
+ },
+ // 3) Zuladung / Tankmenge bis MTOW (immer massenlimitiert)
+ function(){
+   let empty,p1,p2,bag,nonFuel,restKg,guard=0;
+   do{
+     empty=_r(505,525); p1=_r(75,95); p2=_r(70,95); bag=_pick([0,5,10,15,20]);
+     nonFuel=empty+p1+p2+bag; restKg=750-nonFuel; guard++;
+   } while((restKg<18 || restKg>78) && guard<40);
+   if(restKg>78) restKg=78; if(restKg<18) restKg=18;
+   const fuelL=Math.round(restKg/0.72);
+   const d=[Math.round(restKg/0.75), restKg, Math.round((restKg+bag)/0.72)].filter(v=>v!==fuelL&&v>0);
+   return {cat:"Rechnen · Masse",
+     q:"Leermasse "+empty+" kg, 2 Personen ("+p1+" + "+p2+" kg), Gepäck "+bag+" kg. Wie viel Kraftstoff (Liter, Dichte 0,72 kg/L) passt noch bis MTOW 750 kg?",
+     options:_uniq4(fuelL+" L", d.map(v=>v+" L")), answer:fuelL+" L",
+     exp:"Masse ohne Sprit = "+empty+"+"+p1+"+"+p2+"+"+bag+" = "+nonFuel+" kg. Rest bis 750 kg = "+restKg+" kg. ÷ 0,72 kg/L ≈ "+fuelL+" L (liegt unter den 109,6 L Tankvolumen — hier begrenzt die Masse, nicht der Tank).",
+     ref:"§6 Masse & Schwerpunkt"};
+ },
+ // 4) Brenndauer
+ function(){
+   const usable=_pick([60,70,80,90,100,109.6]);
+   const ff=_pick([16,18,20,22,24]);
+   const h=_round(usable/ff,1);
+   const d=[_round(usable/(ff-4),1),_round(usable/(ff+4),1),_round((usable-7.5)/ff,1)].map(_de);
+   return {cat:"Rechnen · Kraftstoff",
+     q:"Ausfliegbar "+_de(usable)+" L, Reiseverbrauch "+ff+" L/h. Wie lang ist die reine Brenndauer (ohne Reserve)?",
+     options:_uniq4(_de(h)+" h", d.map(x=>x+" h")), answer:_de(h)+" h",
+     exp:_de(usable)+" L ÷ "+ff+" L/h = "+_de(h)+" h. Für die nutzbare Flugzeit noch Anlassen/Rollen und 30 min Reserve (bei 55 % ≈ 7,5 L) abziehen!",
+     ref:"§5.2.10 Flugdauer"};
+ },
+ // 5) Seitenwindkomponente
+ function(){
+   const wind=_pick([10,12,15,18,20]);
+   const ang=_pick([30,45,60,90]);
+   const xw=Math.round(wind*Math.sin(ang*Math.PI/180));
+   const hw=Math.round(wind*Math.cos(ang*Math.PI/180));
+   const d=[hw, wind, Math.round(wind*Math.sin((ang===90?60:90)*Math.PI/180))].filter(v=>v!==xw);
+   return {cat:"Rechnen · Wind",
+     q:"Wind "+wind+" kt unter "+ang+"° zur Bahn. Wie groß ist die Seitenwindkomponente?",
+     options:_uniq4(xw+" kt", d.map(v=>v+" kt")), answer:xw+" kt",
+     exp:"Seitenwind = Wind × sin(Winkel) = "+wind+" × sin("+ang+"°) = "+wind+" × "+_de(_round(Math.sin(ang*Math.PI/180),2))+" ≈ "+xw+" kt."+(xw>15?" ⚠ Über der nachgewiesenen Grenze von 15 kt!":" (Grenze: 15 kt nachgewiesen.)"),
+     ref:"§2.14 Seitenwind"};
+ },
+ // 6) Dichtehöhe
+ function(){
+   const pa=_pick([1000,2000,3000,4000,5000,6000]);
+   const isa=Math.round(15-1.98*(pa/1000));
+   const oat=isa+_pick([10,15,20,-5]);
+   const da=Math.round((pa+120*(oat-isa))/100)*100;
+   const d=[Math.round((pa+100*(oat-isa))/100)*100, pa, Math.round((pa-120*(oat-isa))/100)*100].filter(v=>v!==da);
+   return {cat:"Rechnen · Dichtehöhe",
+     q:"Druckhöhe "+pa+" ft, OAT "+oat+" °C (ISA wäre "+isa+" °C). Wie hoch ist überschlägig die Dichtehöhe?",
+     options:_uniq4(da+" ft", d.map(v=>v+" ft")), answer:da+" ft",
+     exp:"DA ≈ Druckhöhe + 120 × (OAT − ISA) = "+pa+" + 120 × ("+oat+" − "+isa+") = "+pa+" + "+(120*(oat-isa))+" ≈ "+da+" ft. Höhere DA = schlechtere Start-/Steigleistung (Auftrieb, Motor, Propeller).",
+     ref:"§5.2.4 Flugplanung"};
+ }
+];
+function generateRechenDeck(n){
+  const out=[];
+  let gi=0; const order=shuffle(RECHEN_GENERATORS.map((_,i)=>i));
+  for(let k=0;k<n;k++){
+    const gen=RECHEN_GENERATORS[order[gi % order.length]]; gi++;
+    let task=gen(), guard=0;
+    while(new Set(task.options).size!==4 && guard<6){ task=gen(); guard++; }
+    out.push(task);
+  }
+  return out;
+}
+
+/* ===================== APP LOGIC ===================== */
+
+const MUSTER = {
+  A210:{ label:'AQUILA A210', sub:'AT01-100 · ROTAX 912 S3 · POH B.25',
+         plate:'MTOW <b>750 kg</b> · V<sub>NE</sub> <b>165 kts</b> · CHT <b>135 °C</b>' },
+  A211:{ label:'AQUILA A211', sub:'AT01-100B · ROTAX 912 S3 · POH A.07 (N/VFR)',
+         plate:'MTOW <b>750 kg</b> · V<sub>NE</sub> <b>165 kts</b> · CHT <b>120 °C</b>' }
+};
+function applyMuster(m){
+  activeMuster = m; QUESTIONS = QUESTION_SETS[m];
+  const info = MUSTER[m];
+  const bn = document.querySelector('.brand-txt .name'); if(bn) bn.textContent = info.label;
+  const bs = document.querySelector('.brand-txt .sub'); if(bs) bs.textContent = info.sub;
+  const pl = document.getElementById('plate-specs'); if(pl) pl.innerHTML = info.plate;
+  document.querySelectorAll('[data-muster]').forEach(b=>{
+    b.classList.toggle('on', b.getAttribute('data-muster')===m);
+  });
+  const h = document.getElementById('hero-muster'); if(h) h.textContent = m + '?';
+  const hs = document.getElementById('hero-muster-start'); if(hs) hs.textContent = m + '?';
+  const poh = (m==='A211') ? 'A211-POH (AT01-100B)' : 'A210-POH (AT01-100)';
+  const ebh=document.getElementById('eyebrow-home'); if(ebh) ebh.textContent = m + ' WISSENSSYSTEM';
+  const ebs=document.getElementById('eyebrow-start'); if(ebs) ebs.textContent = m + ' WISSENSSYSTEM';
+  const ldh=document.getElementById('lede-home'); if(ldh) ldh.innerHTML = 'Vier Trainingswege — Kennwerte-Wissen, Notverfahren aus dem Kopf, Abkürzungen und angewandtes Rechnen. Alles aus dem '+poh+', jeder Punkt mit dem Warum.';
+  initStartCounts();
+  try{ localStorage.setItem('aq_muster', m); }catch(e){}
+}
+function initStartCounts(){
+  const cats=[...new Set(QUESTIONS.map(q=>q.cat))];
+  const sc=document.getElementById('stat-count'); if(sc) sc.textContent=Math.min(QUIZ_LENGTH,QUESTIONS.length);
+  const scat=document.getElementById('stat-cats'); if(scat) scat.textContent=cats.length;
+  const mq=document.getElementById('mc-quiz-count'); if(mq) mq.textContent=QUESTIONS.length+' Fragen';
+  const me=document.getElementById('mc-emg-count'); if(me) me.textContent=EMERGENCIES.length+' Szenarien';
+  const mg=document.getElementById('mc-gloss-count'); if(mg) mg.textContent=GLOSSARY.length+' Einträge';
+  const mr=document.getElementById('mc-rechen-count'); if(mr) mr.textContent=RECHEN_GENERATORS.length+' Aufgabentypen';
+  const bl=document.getElementById('buildline');
+  if(bl) bl.innerHTML='MUSTER <b>'+activeMuster+'</b> · VERSION <b>'+APP_VERSION+'</b> · STAND <b>'+APP_DATE+'</b> · <b>'+QUESTIONS.length+'</b> FRAGEN';
+  const cl=document.getElementById('cat-list');
+  if(cl){ cl.innerHTML=''; cats.forEach(c=>{ const d=document.createElement('div'); d.className='cat'; d.innerHTML='<span class="dot"></span><span>'+c+'</span>'; cl.appendChild(d); }); }
+}
+
+const APP_VERSION = "v1.0";
+const APP_DATE = "15.10.2026";
+const QUIZ_LENGTH = 30;
+
+const el = id => document.getElementById(id);
+const screens = {home:el('screen-home'), start:el('screen-start'), quiz:el('screen-quiz'), result:el('screen-result'), emgMenu:el('screen-emg-menu'), emg:el('screen-emg'), gloss:el('screen-gloss')};
+
+let deck = [], idx = 0, score = 0, answered = false, perCat = {};
+
+function show(name){
+  Object.values(screens).forEach(s=>s.classList.add('hidden'));
+  screens[name].classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'auto'});
+}
+
+function shuffle(a){
+  a = a.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+/* --- populate start screen --- */
+/* initStart handled by applyMuster()/initStartCounts() */
+
+function startQuiz(){
+  deck = shuffle(QUESTIONS).slice(0, Math.min(QUIZ_LENGTH, QUESTIONS.length));
+  idx = 0; score = 0; perCat = {};
+  el('q-total').textContent = deck.length;
+  show('quiz');
+  renderQuestion();
+}
+
+let lastMode = 'quiz';
+function startQuizMode(){ lastMode='quiz'; startQuiz(); }
+function startRechen(){
+  lastMode='rechen';
+  deck = generateRechenDeck(10);
+  idx = 0; score = 0; perCat = {};
+  el('q-total').textContent = deck.length;
+  show('quiz');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = deck[idx];
+  el('q-num').textContent = idx+1;
+  el('q-score').textContent = score;
+  el('q-bar').style.width = ((idx)/deck.length*100)+'%';
+  el('q-cat').textContent = q.cat.toUpperCase();
+  el('q-text').textContent = q.q;
+  el('q-explain').innerHTML = '';
+  el('btn-next').classList.add('hidden');
+
+  const opts = shuffle(q.options.map((t,i)=>({t, c: t===q.answer})));
+  const keys = ['A','B','C','D'];
+  const box = el('q-options');
+  box.innerHTML = '';
+  opts.forEach((o,i)=>{
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.innerHTML = '<span class="key">'+keys[i]+'</span><span>'+o.t+'</span>';
+    b.addEventListener('click', ()=>choose(b, o, opts));
+    box.appendChild(b);
+  });
+}
+
+function choose(btn, opt, opts){
+  if(answered) return;
+  answered = true;
+  const q = deck[idx];
+  const buttons = [...el('q-options').children];
+
+  buttons.forEach(b=>{
+    b.disabled = true;
+    const label = b.querySelector('span:last-child').textContent;
+    if(label === q.answer){
+      b.classList.add('correct');
+      const m = document.createElement('span'); m.className='mark'; m.textContent='RICHTIG';
+      b.appendChild(m);
+    }
+  });
+
+  if(opt.c){
+    score++;
+    perCat[q.cat] = perCat[q.cat] || {ok:0,n:0};
+  } else {
+    btn.classList.add('wrong');
+    const m = document.createElement('span'); m.className='mark'; m.textContent='FALSCH';
+    btn.appendChild(m);
+    buttons.forEach(b=>{ if(!b.classList.contains('correct')&&b!==btn) b.classList.add('muted'); });
+  }
+  perCat[q.cat] = perCat[q.cat] || {ok:0,n:0};
+  perCat[q.cat].n++;
+  if(opt.c) perCat[q.cat].ok++;
+
+  el('q-score').textContent = score;
+  el('q-bar').style.width = ((idx+1)/deck.length*100)+'%';
+
+  const ex = document.createElement('div');
+  ex.className = 'explain';
+  ex.innerHTML = '<div class="tag">'+(opt.c?'✓ KORREKT':'ERKLÄRUNG')+'</div><p>'+q.exp+'</p><span class="ref">POH · '+q.ref+'</span>';
+  el('q-explain').appendChild(ex);
+  if(q.tip){
+    const tp=document.createElement('details');
+    tp.className='tip';
+    tp.innerHTML='<summary>PILOT-TIPP</summary><div class="tipbody">'+q.tip+'</div>';
+    el('q-explain').appendChild(tp);
+  }
+
+  el('btn-next').textContent = (idx+1 < deck.length) ? 'WEITER  →' : 'AUSWERTUNG  →';
+  el('btn-next').classList.remove('hidden');
+}
+
+function next(){
+  idx++;
+  if(idx < deck.length) renderQuestion();
+  else showResult();
+}
+
+function showResult(){
+  show('result');
+  el('r-score').textContent = score;
+  el('r-total').textContent = deck.length;
+  const pct = score/deck.length;
+  const v = el('r-verdict');
+  if(pct >= 0.85){ v.textContent='COCKPIT-READY'; v.className='verdict ok';
+    el('r-sub').textContent='Sehr stark — du kennst deine A210 aus dem Effeff.'; }
+  else if(pct >= 0.6){ v.textContent='SOLIDE BASIS'; v.className='verdict mid';
+    el('r-sub').textContent='Gutes Fundament. Die verpassten Werte gezielt nacharbeiten.'; }
+  else { v.textContent='NACHBRIEFING NÖTIG'; v.className='verdict low';
+    el('r-sub').textContent='Kern-Kennwerte nochmal ins POH — dann neue Runde.'; }
+
+  const bd = el('r-breakdown');
+  bd.innerHTML = '';
+  Object.keys(perCat).sort().forEach(c=>{
+    const d = perCat[c];
+    const good = d.ok === d.n;
+    const row = document.createElement('div');
+    row.className='brow';
+    row.innerHTML = '<span>'+c+'</span><span class="bc '+(good?'g':'r')+'">'+d.ok+'/'+d.n+'</span>';
+    bd.appendChild(row);
+  });
+}
+
+el('btn-start').addEventListener('click', startQuizMode);
+el('btn-next').addEventListener('click', next);
+el('btn-again').addEventListener('click', ()=>{ lastMode==='rechen' ? startRechen() : startQuizMode(); });
+el('btn-home').addEventListener('click', ()=>show('home'));
+
+/* keyboard: 1-4 to answer, Enter to advance */
+/* ===================== EMERGENCY TRAINER ===================== */
+let emgCur=null, emgMode='learn', emgRevealed=0;
+
+function renderEmgMenu(){
+  const grps=[...new Set(EMERGENCIES.map(e=>e.grp))];
+  const body=el('emg-menu-body'); body.innerHTML='';
+  grps.forEach(g=>{
+    const wrap=document.createElement('div'); wrap.className='emg-group';
+    const h=document.createElement('div'); h.className='emg-grouphead mono'; h.textContent=g.toUpperCase();
+    const list=document.createElement('div'); list.className='emg-list';
+    EMERGENCIES.filter(e=>e.grp===g).forEach(e=>{
+      const it=document.createElement('button');
+      it.className='emg-item'+(e.crit?' crit':'');
+      it.innerHTML='<span class="ph"></span><span>'+e.title+'</span><span class="arrow">→</span>';
+      it.addEventListener('click',()=>openEmg(e.id));
+      list.appendChild(it);
+    });
+    wrap.appendChild(h); wrap.appendChild(list); body.appendChild(wrap);
+  });
+  show('emgMenu');
+}
+
+function openEmg(id){
+  emgCur=EMERGENCIES.find(e=>e.id===id); emgMode='learn'; emgRevealed=0;
+  el('emg-group').textContent=emgCur.grp.toUpperCase();
+  el('emg-title').textContent=emgCur.title;
+  setEmgMode('learn');
+  show('emg');
+}
+
+function setEmgMode(m){
+  emgMode=m; emgRevealed=0;
+  el('emg-mode-learn').classList.toggle('on',m==='learn');
+  el('emg-mode-drill').classList.toggle('on',m==='drill');
+  renderEmgBody();
+}
+
+function stepHTML(st,n){
+  const cls='step'+(st.sofort?' crit':'')+(st.warn?' warn':'');
+  let inner='<div class="idx">'+n+'</div><div class="body">';
+  if(st.c) inner+='<div class="ctrl">'+st.c+'</div>';
+  inner+='<div class="act">'+st.a+'</div>';
+  if(st.sofort) inner+='<div class="sofort">SOFORTMASSNAHME</div>';
+  inner+='</div>';
+  return '<div class="'+cls+'">'+inner+'</div>';
+}
+
+function merkeHTML(){
+  return '<div class="merke"><div class="tag">MERKE — DAS WARUM</div><p>'+emgCur.merke+
+    '</p><span class="ref">POH · Notverfahren §'+emgCur.ref+'</span></div>';
+}
+
+function renderEmgBody(){
+  const b=el('emg-body');
+  const sit='<div class="sit"><b>SITUATION</b>'+emgCur.sit+'</div>';
+  if(emgMode==='learn'){
+    let steps='<div class="steps2">';
+    emgCur.steps.forEach((st,i)=>steps+=stepHTML(st,i+1));
+    steps+='</div>';
+    b.innerHTML=sit+steps+merkeHTML();
+  } else {
+    let steps='<div class="steps2" id="drill-steps">';
+    for(let i=0;i<emgRevealed;i++) steps+=stepHTML(emgCur.steps[i],i+1);
+    steps+='</div>';
+    let foot='';
+    if(emgRevealed<emgCur.steps.length){
+      foot='<div class="reveal-card"><div class="prompt">SCHRITT '+(emgRevealed+1)+' — WAS TUST DU?</div>'+
+        '<button class="btn btn-primary" id="emg-reveal">AUFDECKEN ↓</button></div>';
+    } else {
+      foot='<div class="emg-done">✓ CHECKLISTE KOMPLETT</div>'+merkeHTML()+
+        '<div class="emg-actions"><button class="btn btn-ghost" id="emg-retry">NOCHMAL ABFRAGEN</button>'+
+        '<button class="btn btn-ghost" id="emg-tolearn">ZUR CHECKLISTE</button></div>';
+    }
+    b.innerHTML=sit+steps+foot;
+    const rv=el('emg-reveal'); if(rv) rv.addEventListener('click',()=>{emgRevealed++;renderEmgBody();});
+    const rt=el('emg-retry'); if(rt) rt.addEventListener('click',()=>{emgRevealed=0;renderEmgBody();});
+    const tl=el('emg-tolearn'); if(tl) tl.addEventListener('click',()=>setEmgMode('learn'));
+  }
+}
+
+/* ---- wiring: home & navigation ---- */
+el('mode-quiz').addEventListener('click',()=>show('start'));
+el('mode-emg').addEventListener('click',renderEmgMenu);
+el('mode-gloss').addEventListener('click',openGlossary);
+el('mode-rechen').addEventListener('click',startRechen);
+el('gloss-search').addEventListener('input',e=>renderGlossary(e.target.value));
+el('emg-back').addEventListener('click',renderEmgMenu);
+el('emg-mode-learn').addEventListener('click',()=>setEmgMode('learn'));
+el('emg-mode-drill').addEventListener('click',()=>setEmgMode('drill'));
+document.querySelectorAll('[data-home]').forEach(b=>b.addEventListener('click',()=>show('home')));
+
+/* drill keyboard: Enter/Space reveals next step */
+document.addEventListener('keydown',e=>{
+  if(!screens.emg.classList.contains('hidden') && emgMode==='drill'){
+    if(e.key==='Enter'||e.key===' '){const rv=el('emg-reveal'); if(rv){e.preventDefault();rv.click();}}
+  }
+});
+
+document.querySelectorAll('[data-muster]').forEach(b=>{
+  b.addEventListener('click',()=>applyMuster(b.getAttribute('data-muster')));
+});
+(function(){ let m='A210'; try{ const sv=localStorage.getItem('aq_muster'); if(sv==='A210'||sv==='A211') m=sv; }catch(e){} applyMuster(m); })();
+
+show('home');
+
+document.addEventListener('keydown', e=>{
+  if(!screens.quiz.classList.contains('hidden')){
+    if(['1','2','3','4'].includes(e.key)){
+      const b = el('q-options').children[+e.key-1];
+      if(b && !b.disabled) b.click();
+    } else if(e.key==='Enter' && !el('btn-next').classList.contains('hidden')){
+      next();
+    }
+  }
+});
+</script>
+</body>
+</html>
