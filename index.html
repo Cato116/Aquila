@@ -377,6 +377,8 @@
   .gentry .abbr{font-family:'Oswald',sans-serif;font-weight:600;font-size:17px;color:var(--amber);line-height:1.15}
   .gentry .abbr .term{display:block;font-family:'Inter',sans-serif;font-weight:400;font-size:12px;
     color:var(--muted);letter-spacing:.02em;margin-top:3px}
+  .gentry .abbr .term-en{display:block;font-family:'Share Tech Mono',monospace;font-size:10.5px;
+    color:var(--ice);letter-spacing:.04em;margin-top:4px;opacity:.85}
   .gentry .def{color:var(--muted);font-size:14.5px;line-height:1.55}
   .gloss-none{color:var(--dim);font-family:'Share Tech Mono',monospace;font-size:13px;
     letter-spacing:.08em;padding:20px 2px}
@@ -385,6 +387,30 @@
   .modecard.rechen::before{background:var(--green)}
   .modecard.rechen .mc-eyebrow{color:var(--green)}
   .modecard.rechen .mc-foot .go{color:var(--green)}
+
+  /* ---------- VERGLEICH ---------- */
+  .modecard.compare::before{background:var(--amber)}
+  .modecard.compare .mc-eyebrow{color:var(--amber)}
+  .cmp-wrap{max-width:860px;margin:0 auto}
+  .cmp-legend{display:inline-flex;align-items:center;gap:6px;margin-left:10px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--amber)}
+  .cmp-dot{width:8px;height:8px;border-radius:2px;background:var(--amber);display:inline-block}
+  .cmp-group{margin-bottom:26px}
+  .cmp-grouphead{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.18em;color:var(--amber);padding-bottom:9px;border-bottom:1px solid var(--border);margin-bottom:4px}
+  .cmp-head{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:8px 14px;
+    font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--dim)}
+  .cmp-head span:nth-child(2){color:var(--ice)} .cmp-head span:nth-child(3){color:var(--amber)}
+  .cmp-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:start;
+    border:1px solid var(--border);border-radius:3px;background:var(--panel);padding:12px 14px;margin-bottom:7px}
+  .cmp-row.diff{border-left:3px solid var(--amber)}
+  .cmp-row .ck{font-size:13.5px;color:var(--muted);font-weight:500}
+  .cmp-row .ca,.cmp-row .cb{font-size:14px;color:var(--white)}
+  .cmp-row.diff .ca{color:var(--ice)} .cmp-row.diff .cb{color:var(--amber)}
+  @media (max-width:620px){
+    .cmp-head{display:none}
+    .cmp-row{grid-template-columns:1fr;gap:4px}
+    .cmp-row .ca::before{content:'A210: ';color:var(--ice);font-family:"Share Tech Mono",monospace;font-size:11px}
+    .cmp-row .cb::before{content:'A211: ';color:var(--amber);font-family:"Share Tech Mono",monospace;font-size:11px}
+  }
 
   @media (prefers-reduced-motion:reduce){
     *{animation:none !important;transition:none !important}
@@ -451,6 +477,12 @@
         <div class="mc-desc">Angewandte Flugplanung mit Zufallswerten: Überziehen in der Kurve, Gleitstrecke, Zuladung, Tank, Seitenwind, Dichtehöhe. Jede Aufgabe mit Rechenweg.</div>
         <div class="mc-foot"><span id="mc-rechen-count">— Aufgabentypen</span><span class="go">→</span></div>
       </button>
+      <button class="modecard compare" id="mode-compare">
+        <div class="mc-eyebrow">▸ MODUS 05</div>
+        <div class="mc-title">A210 ↔ A211</div>
+        <div class="mc-desc">Muster-Vergleich auf einen Blick: Triebwerk, Grenzwerte, Markierungen, Systeme. Unterschiede hervorgehoben, Gemeinsames gelistet.</div>
+        <div class="mc-foot"><span id="mc-compare-count">— Unterschiede</span><span class="go">→</span></div>
+      </button>
     </div>
   </section>
 
@@ -498,7 +530,8 @@
     <div class="rsub" id="r-sub"></div>
     <div class="breakdown" id="r-breakdown"></div>
     <div class="result-actions">
-      <button class="btn btn-primary" id="btn-again">NEUE RUNDE&nbsp;&nbsp;&rarr;</button>
+      <button class="btn btn-primary hidden" id="btn-wrong">NUR FEHLER ÜBEN</button>
+      <button class="btn btn-ghost" id="btn-again">NEUE RUNDE&nbsp;&nbsp;&rarr;</button>
       <button class="btn btn-ghost" id="btn-home">STARTSEITE</button>
     </div>
   </section>
@@ -532,6 +565,14 @@
     <div class="emg-sub">Alle relevanten Aquila-/Luftfahrt-Abkürzungen aus Abschnitt 1.11 des POH. Tippe zum Filtern — nach Kürzel, Begriff oder Stichwort.</div>
     <input type="text" id="gloss-search" class="gloss-search" placeholder="Suchen … z. B. VNO, Schwerpunkt, AHRS" autocomplete="off" autocapitalize="off" spellcheck="false">
     <div id="gloss-body"></div>
+  </section>
+
+  <!-- ============ VERGLEICH A210 ↔ A211 ============ -->
+  <section id="screen-compare" class="cmp-wrap hidden">
+    <button class="backlink" data-home>← ZURÜCK</button>
+    <div class="emg-intro">A210 ↔ A211 Vergleich</div>
+    <div class="emg-sub">Gleicher Airframe (AT01-100), gleicher ROTAX 912 S3 — aber im Detail unterscheiden sie sich. <span class="cmp-legend"><span class="cmp-dot"></span>= Unterschied</span></div>
+    <div id="compare-body"></div>
   </section>
 
 </div>
@@ -816,7 +857,8 @@ const QUESTION_SETS = {
    ],
    "answer": "112 kt",
    "exp": "VA = 112 kt. Oberhalb keine abrupten, vollen Ruderausschläge — sonst Überlastungsgefahr. VA sinkt bei geringerer Masse.",
-   "ref": "§2.2 Geschwindigkeitsgrenzen"
+   "ref": "§2.2 Geschwindigkeitsgrenzen",
+   "tip": "VA ist eine <b>Struktur-Schutz­geschwindigkeit</b>, kein Gefühlswert. Unter VA überzieht der Flügel, BEVOR die Struktur überlastet wird — eine Böe oder ein voller Ruderausschlag lässt den Flügel eher <b>abreißen</b> (harmlos) als <b>brechen</b>. Kontraintuitiv und wichtig: <b>VA sinkt mit geringerer Masse</b>. Dieselbe Böe beschleunigt ein leichtes Flugzeug stärker (a = F/m), das Lastvielfache ist früher erreicht. Die 112 kt gelten bei 750 kg; solo/leicht entsprechend langsamer. In Turbulenz also auf oder unter VA und keine abrupten, vollen Ausschläge."
   },
   {
    "cat": "Geschwindigkeiten",
@@ -855,7 +897,8 @@ const QUESTION_SETS = {
    ],
    "answer": "130–165 kt",
    "exp": "Gelber Bogen 130–165 kt: nur in ruhiger Luft und mit äußerster Vorsicht. Bei 165 kt die rote Linie (VNE).",
-   "ref": "§2.3 Fahrtmessermarkierungen"
+   "ref": "§2.3 Fahrtmessermarkierungen",
+   "tip": "Der gelbe Bogen (VNO–VNE, 130–165 kt) ist der <b>Vorsichtsbereich</b> — „nur in ruhiger Luft“. Dahinter steckt die Böenfestigkeit: Bis VNO ist die Struktur für die volle Böenlast ausgelegt, im gelben Bereich nur noch für ruhige Luft. Eine kräftige Böe bei hoher Fahrt erzeugt ein hohes Lastvielfache — genau die Kombination, die Strukturen überlastet. Logik: Turbulenz → Fahrt raus Richtung VA; glatte Luft → gelber Bereich nutzbar, aber ohne ruckartige Manöver. Bei 165 kt (VNE) ist absolut Schluss."
   },
   {
    "cat": "Geschwindigkeiten",
@@ -907,7 +950,8 @@ const QUESTION_SETS = {
    ],
    "answer": "52 kt",
    "exp": "Vx = 52 KIAS (Klappen Startstellung). Vx < Vy — steilster Winkel zum Hindernis, nicht schnellstes Steigen.",
-   "ref": "§5 Flugleistungen"
+   "ref": "§5 Flugleistungen",
+   "tip": "Vx (52 kt) = <b>steilster Winkel</b>, maximale Höhe pro Strecke — fürs Hindernis direkt nach dem Start. Vy (65 kt) = schnellste Höhe pro Zeit. Vx nur so lange wie nötig fliegen: hoher Anstellwinkel + niedrige Fahrt bedeuten <b>schlechtere Kühlung</b> (wenig Fahrtwind, Motor wird heiß) und <b>schlechtere Sicht</b> über die Nase. Hindernis frei → auf Vy beschleunigen. Beide Werte sinken mit der Höhe und mit geringerer Masse."
   },
   {
    "cat": "Geschwindigkeiten",
@@ -1194,7 +1238,8 @@ const QUESTION_SETS = {
    ],
    "answer": "alle 60 min",
    "exp": "Placard: „ALLE 60 MIN“. Das hält die Füllstände ausgeglichen und damit den Schwerpunkt/Trimmzustand symmetrisch.",
-   "ref": "Placard / §7.13"
+   "ref": "Placard / §7.13",
+   "tip": "Warum alle ~60 min wechseln? Zwei Gründe. <b>Querbalance:</b> Ungleiche Tankfüllung erzeugt ein Rollmoment, das du ständig halten/trimmen musst — regelmäßiges Wechseln hält beide Flügel gleich schwer. <b>Spritmanagement:</b> Feste Intervalle sind deine „Uhr“ gegen das versehentliche Leerfahren eines Tanks (Aussetzer in Bodennähe wäre fatal). Beim Umschalten die elektrische Pumpe kurz mitlaufen lassen und auf stabilen Kraftstoffdruck achten (~8 s bis voller Druck). Vor Start und Landung immer der vollere Tank."
   },
   {
    "cat": "Systeme & Konfiguration",
@@ -1220,7 +1265,8 @@ const QUESTION_SETS = {
    ],
    "answer": "Sie mindert die Motorleistung",
    "exp": "Warme, dünnere Luft → weniger Leistung. Ausnahme Durchstarten: dort Vollgas und Vorwärmung AUS, um keine Leistung zu verschenken.",
-   "ref": "§7.12.5 Vergaservorwärmung"
+   "ref": "§7.12.5 Vergaservorwärmung",
+   "tip": "Die Vorwärmung führt den Vergasern warme Motorluft zu — <b>warme Luft ist dünner</b>, das Gemisch fetter, daher sinkt die Leistung (beim Run-up der geprüfte Abfall von 20–50 U/min). Dieser Abfall ist auch dein <b>Eis-Detektor</b>: Ziehst du die Vorwärmung und die Drehzahl fällt erst und steigt dann wieder leicht ÜBER den Ausgangswert, ist gerade Eis abgetaut (mehr Luftdurchsatz). Bei Verdacht früh und länger ziehen und die Leistung dabei kaum verändern. Beim Durchstarten/Vollgas aber AUS."
   },
   {
    "cat": "Notverfahren",
@@ -1299,7 +1345,8 @@ const QUESTION_SETS = {
    ],
    "answer": "15 kt",
    "exp": "15 kt / 27 km/h nachgewiesen. Ein demonstrierter, kein absoluter Grenzwert — aber ein Start bei mehr kann unbeherrschbar werden.",
-   "ref": "§2.14 Seitenwind"
+   "ref": "§2.14 Seitenwind",
+   "tip": "15 kt ist die <b>maximal nachgewiesene</b> Seitenwindkomponente — ein im Flugtest demonstrierter Wert, <b>kein zugelassenes Limit</b> wie VNE. Darüber ist es nicht „verboten“, aber unerprobt — die Beherrschbarkeit ist nicht garantiert und liegt allein in deiner Verantwortung als PIC. Das POH warnt: höhere Komponenten können zu unbeherrschbaren Manövern führen. Komponente vorher ausrechnen (Wind × sin Winkel) und Reserven für Böen und kurze/nasse Bahn einplanen. Im Zweifel: andere Bahn oder anderer Platz."
   },
   {
    "cat": "Betriebsgrenzen",
@@ -1378,7 +1425,8 @@ const QUESTION_SETS = {
    ],
    "answer": "200 ± 50 U/min",
    "exp": "3× zwischen START- und REISE-Stellung schalten, Abfall 200 ± 50 U/min — das bestätigt, dass die Verstellung Öl annimmt. Danach STARTSTELLUNG.",
-   "ref": "§4.5.5 Vor dem Start"
+   "ref": "§4.5.5 Vor dem Start",
+   "tip": "Was beim Durchschalten mechanisch passiert: Der Propellerverstellhebel steuert den <b>hydraulischen Regler (Governor)</b>, der mit Motoröldruck gegen eine Feder arbeitet. Schiebst du Richtung REISE (große Steigung), lässt der Regler Öl in die Propellernabe — die Blätter drehen auf einen größeren Anstellwinkel, der Propeller „beißt“ mehr Luft, bremst dadurch und die <b>Drehzahl fällt</b> (die ~200 U/min, die du prüfst). Zurück auf START entweicht das Öl, die Feder stellt kleine Steigung, die Drehzahl steigt wieder. Du prüfst damit <b>drei Dinge auf einmal</b>: (1) der Regler nimmt Öl an und reagiert überhaupt (Drehzahl bewegt sich), (2) die Verstellung ist gängig in beide Richtungen, (3) der Öldruck bleibt dabei stabil. Das <b>3×-Durchschalten hat noch einen zweiten Zweck</b>: Es <b>spült frisches, warmes Öl</b> durch Regler und Nabe und schwemmt Schlamm/Bleiablagerungen (aus AVGAS) sowie kalte, zähe Ölreste heraus — deshalb besonders im Winter wichtig. <b>Kein oder ein viel zu kleiner Abfall</b> heißt: Der Regler bekommt kein Öl oder die Verstellung klemmt → der Propeller verhält sich dann wie ein starrer Festpropeller, und bei Vollgas kann die <b>zulässige Drehzahl überschritten</b> werden. Start abbrechen."
   },
   {
    "cat": "Flugpraxis & Verfahren",
@@ -1430,7 +1478,8 @@ const QUESTION_SETS = {
    ],
    "answer": "50 °C",
    "exp": "Warmlauf zuerst 2 min bei 820 U/min, dann bei 1030 U/min bis 50 °C Öltemperatur (beim Rollen möglich). 50 °C ist zugleich die untere grüne Marke.",
-   "ref": "§4.5.3 Vor dem Rollen"
+   "ref": "§4.5.3 Vor dem Rollen",
+   "tip": "Warum erst bei 50 °C volle Leistung? <b>Kaltes Öl ist zäh</b> — es fließt langsam, baut den tragenden Schmierfilm nicht überall sofort auf und transportiert Wärme schlecht. Unter Vollast mit kaltem Öl laufen Lager und besonders die <b>Propellerregelung</b> (der Governor arbeitet mit Motoröl!) kurz „trocken“. 50 °C ist zugleich die untere grüne Marke. Deshalb: ~2 min bei 820 U/min, dann 1030 U/min bis 50 °C (geht beim Rollen). Geduld hier spart teure Motorstunden später."
   },
   {
    "cat": "Flugpraxis & Verfahren",
@@ -1496,7 +1545,8 @@ const QUESTION_SETS = {
    ],
    "answer": "zuerst Drehzahl, dann Ladedruck",
    "exp": "Erhöhen: zuerst Drehzahl, dann Ladedruck. Senken umgekehrt. So vermeidet man hohen Ladedruck bei niedriger Drehzahl.",
-   "ref": "§4.5.6 Start"
+   "ref": "§4.5.6 Start",
+   "tip": "Merksatz: <b>Erhöhen = zuerst Drehzahl</b> (Propellerhebel), dann Ladedruck. <b>Senken = umgekehrt.</b> Grund ist die „oversquare“-Vermeidung: viel Ladedruck bei niedriger Drehzahl = hoher Zylinderdruck pro Arbeitstakt → hohe mechanische und thermische Last auf Lager und Kolben. „Drehzahl zuerst“ sorgt dafür, dass der Motor schon schneller dreht, wenn der höhere Ladedruck kommt; beim Reduzieren nimmt man zuerst den Druck weg. Beim Constant-Speed-ROTAX gute Gewohnheit — fürs Triebwerksleben und fürs Muskelgedächtnis."
   },
   {
    "cat": "Überziehen",
@@ -1879,7 +1929,8 @@ const QUESTION_SETS = {
    ],
    "answer": "112 kt",
    "exp": "VA = 112 kt. Oberhalb keine abrupten, vollen Ruderausschläge — sonst Überlastungsgefahr. VA sinkt bei geringerer Masse.",
-   "ref": "§2.2 Geschwindigkeitsgrenzen"
+   "ref": "§2.2 Geschwindigkeitsgrenzen",
+   "tip": "VA ist eine <b>Struktur-Schutz­geschwindigkeit</b>, kein Gefühlswert. Unter VA überzieht der Flügel, BEVOR die Struktur überlastet wird — eine Böe oder ein voller Ruderausschlag lässt den Flügel eher <b>abreißen</b> (harmlos) als <b>brechen</b>. Kontraintuitiv und wichtig: <b>VA sinkt mit geringerer Masse</b>. Dieselbe Böe beschleunigt ein leichtes Flugzeug stärker (a = F/m), das Lastvielfache ist früher erreicht. Die 112 kt gelten bei 750 kg; solo/leicht entsprechend langsamer. In Turbulenz also auf oder unter VA und keine abrupten, vollen Ausschläge."
   },
   {
    "cat": "Geschwindigkeiten",
@@ -1918,7 +1969,8 @@ const QUESTION_SETS = {
    ],
    "answer": "130–165 kt",
    "exp": "Gelber Bogen 130–165 kt: nur in ruhiger Luft und mit äußerster Vorsicht. Bei 165 kt die rote Linie (VNE).",
-   "ref": "§2.3 Fahrtmessermarkierungen"
+   "ref": "§2.3 Fahrtmessermarkierungen",
+   "tip": "Der gelbe Bogen (VNO–VNE, 130–165 kt) ist der <b>Vorsichtsbereich</b> — „nur in ruhiger Luft“. Dahinter steckt die Böenfestigkeit: Bis VNO ist die Struktur für die volle Böenlast ausgelegt, im gelben Bereich nur noch für ruhige Luft. Eine kräftige Böe bei hoher Fahrt erzeugt ein hohes Lastvielfache — genau die Kombination, die Strukturen überlastet. Logik: Turbulenz → Fahrt raus Richtung VA; glatte Luft → gelber Bereich nutzbar, aber ohne ruckartige Manöver. Bei 165 kt (VNE) ist absolut Schluss."
   },
   {
    "cat": "Geschwindigkeiten",
@@ -1970,7 +2022,8 @@ const QUESTION_SETS = {
    ],
    "answer": "52 kt",
    "exp": "Vx = 52 KIAS (Klappen Startstellung). Vx < Vy — steilster Winkel zum Hindernis, nicht schnellstes Steigen.",
-   "ref": "§5 Flugleistungen"
+   "ref": "§5 Flugleistungen",
+   "tip": "Vx (52 kt) = <b>steilster Winkel</b>, maximale Höhe pro Strecke — fürs Hindernis direkt nach dem Start. Vy (65 kt) = schnellste Höhe pro Zeit. Vx nur so lange wie nötig fliegen: hoher Anstellwinkel + niedrige Fahrt bedeuten <b>schlechtere Kühlung</b> (wenig Fahrtwind, Motor wird heiß) und <b>schlechtere Sicht</b> über die Nase. Hindernis frei → auf Vy beschleunigen. Beide Werte sinken mit der Höhe und mit geringerer Masse."
   },
   {
    "cat": "Geschwindigkeiten",
@@ -2257,7 +2310,8 @@ const QUESTION_SETS = {
    ],
    "answer": "alle 60 min",
    "exp": "Placard: „ALLE 60 MIN“. Das hält die Füllstände ausgeglichen und damit den Schwerpunkt/Trimmzustand symmetrisch.",
-   "ref": "Placard / §7.13"
+   "ref": "Placard / §7.13",
+   "tip": "Warum alle ~60 min wechseln? Zwei Gründe. <b>Querbalance:</b> Ungleiche Tankfüllung erzeugt ein Rollmoment, das du ständig halten/trimmen musst — regelmäßiges Wechseln hält beide Flügel gleich schwer. <b>Spritmanagement:</b> Feste Intervalle sind deine „Uhr“ gegen das versehentliche Leerfahren eines Tanks (Aussetzer in Bodennähe wäre fatal). Beim Umschalten die elektrische Pumpe kurz mitlaufen lassen und auf stabilen Kraftstoffdruck achten (~8 s bis voller Druck). Vor Start und Landung immer der vollere Tank."
   },
   {
    "cat": "Systeme & Konfiguration",
@@ -2283,7 +2337,8 @@ const QUESTION_SETS = {
    ],
    "answer": "Sie mindert die Motorleistung",
    "exp": "Warme, dünnere Luft → weniger Leistung. Ausnahme Durchstarten: dort Vollgas und Vorwärmung AUS, um keine Leistung zu verschenken.",
-   "ref": "§7.12.5 Vergaservorwärmung"
+   "ref": "§7.12.5 Vergaservorwärmung",
+   "tip": "Die Vorwärmung führt den Vergasern warme Motorluft zu — <b>warme Luft ist dünner</b>, das Gemisch fetter, daher sinkt die Leistung (beim Run-up der geprüfte Abfall von 20–50 U/min). Dieser Abfall ist auch dein <b>Eis-Detektor</b>: Ziehst du die Vorwärmung und die Drehzahl fällt erst und steigt dann wieder leicht ÜBER den Ausgangswert, ist gerade Eis abgetaut (mehr Luftdurchsatz). Bei Verdacht früh und länger ziehen und die Leistung dabei kaum verändern. Beim Durchstarten/Vollgas aber AUS."
   },
   {
    "cat": "Notverfahren",
@@ -2362,7 +2417,8 @@ const QUESTION_SETS = {
    ],
    "answer": "15 kt",
    "exp": "15 kt / 27 km/h nachgewiesen. Ein demonstrierter, kein absoluter Grenzwert — aber ein Start bei mehr kann unbeherrschbar werden.",
-   "ref": "§2.14 Seitenwind"
+   "ref": "§2.14 Seitenwind",
+   "tip": "15 kt ist die <b>maximal nachgewiesene</b> Seitenwindkomponente — ein im Flugtest demonstrierter Wert, <b>kein zugelassenes Limit</b> wie VNE. Darüber ist es nicht „verboten“, aber unerprobt — die Beherrschbarkeit ist nicht garantiert und liegt allein in deiner Verantwortung als PIC. Das POH warnt: höhere Komponenten können zu unbeherrschbaren Manövern führen. Komponente vorher ausrechnen (Wind × sin Winkel) und Reserven für Böen und kurze/nasse Bahn einplanen. Im Zweifel: andere Bahn oder anderer Platz."
   },
   {
    "cat": "Betriebsgrenzen",
@@ -2441,7 +2497,8 @@ const QUESTION_SETS = {
    ],
    "answer": "200 ± 50 U/min",
    "exp": "3× zwischen START- und REISE-Stellung schalten, Abfall 200 ± 50 U/min — das bestätigt, dass die Verstellung Öl annimmt. Danach STARTSTELLUNG.",
-   "ref": "§4.5.5 Vor dem Start"
+   "ref": "§4.5.5 Vor dem Start",
+   "tip": "Was beim Durchschalten mechanisch passiert: Der Propellerverstellhebel steuert den <b>hydraulischen Regler (Governor)</b>, der mit Motoröldruck gegen eine Feder arbeitet. Schiebst du Richtung REISE (große Steigung), lässt der Regler Öl in die Propellernabe — die Blätter drehen auf einen größeren Anstellwinkel, der Propeller „beißt“ mehr Luft, bremst dadurch und die <b>Drehzahl fällt</b> (die ~200 U/min, die du prüfst). Zurück auf START entweicht das Öl, die Feder stellt kleine Steigung, die Drehzahl steigt wieder. Du prüfst damit <b>drei Dinge auf einmal</b>: (1) der Regler nimmt Öl an und reagiert überhaupt (Drehzahl bewegt sich), (2) die Verstellung ist gängig in beide Richtungen, (3) der Öldruck bleibt dabei stabil. Das <b>3×-Durchschalten hat noch einen zweiten Zweck</b>: Es <b>spült frisches, warmes Öl</b> durch Regler und Nabe und schwemmt Schlamm/Bleiablagerungen (aus AVGAS) sowie kalte, zähe Ölreste heraus — deshalb besonders im Winter wichtig. <b>Kein oder ein viel zu kleiner Abfall</b> heißt: Der Regler bekommt kein Öl oder die Verstellung klemmt → der Propeller verhält sich dann wie ein starrer Festpropeller, und bei Vollgas kann die <b>zulässige Drehzahl überschritten</b> werden. Start abbrechen."
   },
   {
    "cat": "Flugpraxis & Verfahren",
@@ -2493,7 +2550,8 @@ const QUESTION_SETS = {
    ],
    "answer": "50 °C",
    "exp": "Warmlauf zuerst 2 min bei 820 U/min, dann bei 1030 U/min bis 50 °C Öltemperatur (beim Rollen möglich). 50 °C ist zugleich die untere grüne Marke.",
-   "ref": "§4.5.3 Vor dem Rollen"
+   "ref": "§4.5.3 Vor dem Rollen",
+   "tip": "Warum erst bei 50 °C volle Leistung? <b>Kaltes Öl ist zäh</b> — es fließt langsam, baut den tragenden Schmierfilm nicht überall sofort auf und transportiert Wärme schlecht. Unter Vollast mit kaltem Öl laufen Lager und besonders die <b>Propellerregelung</b> (der Governor arbeitet mit Motoröl!) kurz „trocken“. 50 °C ist zugleich die untere grüne Marke. Deshalb: ~2 min bei 820 U/min, dann 1030 U/min bis 50 °C (geht beim Rollen). Geduld hier spart teure Motorstunden später."
   },
   {
    "cat": "Flugpraxis & Verfahren",
@@ -2559,7 +2617,8 @@ const QUESTION_SETS = {
    ],
    "answer": "zuerst Drehzahl, dann Ladedruck",
    "exp": "Erhöhen: zuerst Drehzahl, dann Ladedruck. Senken umgekehrt. So vermeidet man hohen Ladedruck bei niedriger Drehzahl.",
-   "ref": "§4.5.6 Start"
+   "ref": "§4.5.6 Start",
+   "tip": "Merksatz: <b>Erhöhen = zuerst Drehzahl</b> (Propellerhebel), dann Ladedruck. <b>Senken = umgekehrt.</b> Grund ist die „oversquare“-Vermeidung: viel Ladedruck bei niedriger Drehzahl = hoher Zylinderdruck pro Arbeitstakt → hohe mechanische und thermische Last auf Lager und Kolben. „Drehzahl zuerst“ sorgt dafür, dass der Motor schon schneller dreht, wenn der höhere Ladedruck kommt; beim Reduzieren nimmt man zuerst den Druck weg. Beim Constant-Speed-ROTAX gute Gewohnheit — fürs Triebwerksleben und fürs Muskelgedächtnis."
   },
   {
    "cat": "Überziehen",
@@ -2864,19 +2923,19 @@ const EMERGENCIES = [
 ];
 
 
-const GLOSSARY = [{"g": "Geschwindigkeiten", "a": "IAS", "t": "Indicated Airspeed", "d": "Angezeigte Geschwindigkeit am Fahrtmesser."}, {"g": "Geschwindigkeiten", "a": "KIAS", "t": "IAS in Knoten", "d": "Angezeigte Geschwindigkeit, in Knoten abgelesen."}, {"g": "Geschwindigkeiten", "a": "CAS", "t": "Calibrated Airspeed", "d": "Um Einbau- und Instrumentenfehler berichtigte IAS; entspricht in MSL/ISA der TAS."}, {"g": "Geschwindigkeiten", "a": "KCAS", "t": "CAS in Knoten", "d": "Kalibrierte Geschwindigkeit in Knoten."}, {"g": "Geschwindigkeiten", "a": "TAS", "t": "True Airspeed", "d": "Wahre Geschwindigkeit gegenüber der Luft — CAS berichtigt um Höhe und Temperatur."}, {"g": "Geschwindigkeiten", "a": "GS", "t": "Ground Speed", "d": "Geschwindigkeit über Grund (TAS ± Wind)."}, {"g": "Geschwindigkeiten", "a": "VA", "t": "Manövergeschwindigkeit", "d": "112 kt. Oberhalb keine vollen/abrupten Ruderausschläge — Überlastungsgefahr. Sinkt bei geringerer Masse."}, {"g": "Geschwindigkeiten", "a": "VS", "t": "Überziehgeschwindigkeit", "d": "Überziehgeschwindigkeit ohne Leistung in der jeweiligen Konfiguration."}, {"g": "Geschwindigkeiten", "a": "VS0", "t": "Überziehgeschw. Landekonfiguration", "d": "Überziehgeschwindigkeit ohne Leistung mit Landeklappen (Markierung weißer Bogen unten)."}, {"g": "Geschwindigkeiten", "a": "VX", "t": "Bester Steigwinkel", "d": "52 kt in MSL. Steilster Höhengewinn pro Strecke — fürs Hindernis."}, {"g": "Geschwindigkeiten", "a": "VY", "t": "Bestes Steigen", "d": "65 kt in MSL (nimmt mit Höhe ab). Schnellster Höhengewinn pro Zeit."}, {"g": "Geschwindigkeiten", "a": "VFE", "t": "Max. mit Klappen", "d": "90 kt. Höchstgeschwindigkeit mit ausgefahrenen Landeklappen (T/O oder LDG)."}, {"g": "Geschwindigkeiten", "a": "VNO", "t": "Max. Reisegeschwindigkeit", "d": "130 kt = Beginn gelber Bogen. Nur in ruhiger Luft und mit Vorsicht überschreiten."}, {"g": "Geschwindigkeiten", "a": "VNE", "t": "Never Exceed", "d": "165 kt (rote Linie). Darf in keiner Betriebsart überschritten werden."}, {"g": "Masse & Schwerpunkt", "a": "BE", "t": "Bezugsebene", "d": "Vertikalebene an der Flügelvorderkante (Trennstelle zum Rumpf), von der alle Hebelarme gemessen werden."}, {"g": "Masse & Schwerpunkt", "a": "BL", "t": "Bezugslinie", "d": "Festgelegte horizontale Referenzlinie für die Wägung."}, {"g": "Masse & Schwerpunkt", "a": "Hebelarm", "t": "Lever Arm", "d": "Horizontaler Abstand des Schwerpunkts eines Bauteils von der BE."}, {"g": "Masse & Schwerpunkt", "a": "Moment", "t": "Moment", "d": "Produkt aus Masse und Hebelarm eines Bauteils."}, {"g": "Masse & Schwerpunkt", "a": "MTOW", "t": "Max. Startmasse", "d": "750 kg. Höchstzulässige Masse für den Start."}, {"g": "Masse & Schwerpunkt", "a": "MLW", "t": "Max. Landemasse", "d": "750 kg. Bei der Aquila identisch mit MTOW."}, {"g": "Masse & Schwerpunkt", "a": "MZFW", "t": "Leermasse", "d": "Masse inkl. Öl, Kühlwasser und nicht-ausfliegbarem Treibstoff. Siehe Wägebericht."}, {"g": "Masse & Schwerpunkt", "a": "Zuladung", "t": "Payload", "d": "Differenz zwischen Abflugmasse und Leermasse."}, {"g": "Masse & Schwerpunkt", "a": "CG / SP", "t": "Schwerpunkt", "d": "Gleichgewichtspunkt. Zulässig 0,427–0,523 m hinter BE (31–40 % MAC)."}, {"g": "Masse & Schwerpunkt", "a": "MAC", "t": "Mean Aerodynamic Chord", "d": "Mittlere aerodynamische Flügeltiefe = 1,07 m. Bezug für CG-Prozentangaben."}, {"g": "Meteorologie", "a": "ISA", "t": "Internationale Standardatmosphäre", "d": "15 °C und 1013,25 hPa in MSL; Bezug für alle Leistungsdaten."}, {"g": "Meteorologie", "a": "MSL", "t": "Mean Sea Level", "d": "Höhe über dem Meeresspiegel."}, {"g": "Meteorologie", "a": "OAT", "t": "Outside Air Temperature", "d": "Außenlufttemperatur."}, {"g": "Meteorologie", "a": "SAT", "t": "Static Air Temperature", "d": "Statische Lufttemperatur — entspricht OAT."}, {"g": "Meteorologie", "a": "QNH", "t": "Luftdruck auf Meeresniveau", "d": "Auf MSL reduzierter Ortsdruck; eingestellt zeigt der Höhenmesser die Höhe über MSL."}, {"g": "Meteorologie", "a": "VFR Tag", "t": "D/VFR", "d": "Sichtflug am Tag (Beginn bürgerl. Morgen- bis Ende bürgerl. Abenddämmerung)."}, {"g": "Meteorologie", "a": "VFR Nacht", "t": "N/VFR", "d": "Sichtflug bei Nacht. Nur A211 (AT01-100B) zugelassen; erfordert u. a. zweiten Alternator."}, {"g": "Triebwerk & Leistung", "a": "TOP", "t": "Startleistung (Take-Off Power)", "d": "Höchstzulässige Motorleistung für den Start. A210: 69 kW · A211: 73,5 kW (max. 5 min)."}, {"g": "Triebwerk & Leistung", "a": "MCP", "t": "Max. Dauerleistung", "d": "Höchste dauerhaft zugelassene Leistung = 69 kW bei 2260 U/min."}, {"g": "Triebwerk & Leistung", "a": "MP", "t": "Manifold Pressure", "d": "Ladedruck. Beim Erhöhen zuerst Drehzahl, dann MP; beim Senken umgekehrt."}, {"g": "Triebwerk & Leistung", "a": "RPM", "t": "Revolutions per Minute", "d": "Propellerdrehzahl (Untersetzung 2,43:1). Grün bis 2260 U/min."}, {"g": "Triebwerk & Leistung", "a": "FF", "t": "Fuel Flow", "d": "Treibstoffverbrauch pro Stunde (l/h) laut Reiseflugtabelle."}, {"g": "Triebwerk & Leistung", "a": "CHT", "t": "Cylinder Head Temperature", "d": "Zylinderkopftemperatur. Max A210: 135 °C · A211: 120 °C (129 bei altem Kopf Zyl. 3)."}, {"g": "Konfiguration", "a": "UP", "t": "Landeklappe Reisestellung", "d": "Klappen eingefahren (0°)."}, {"g": "Konfiguration", "a": "T/O", "t": "Landeklappe Startstellung", "d": "Startklappe (17°)."}, {"g": "Konfiguration", "a": "LDG", "t": "Landeklappe Landestellung", "d": "Landeklappe (35°)."}, {"g": "Avionik & Elektrik", "a": "PFD", "t": "Primary Flight Display", "d": "Primäres Fluglagedisplay (Garmin G500/G500 TXi bei der A211)."}, {"g": "Avionik & Elektrik", "a": "MFD", "t": "Multifunktions-Display", "d": "Multifunktionsanzeige (Karte, Motordaten) auf der GDU."}, {"g": "Avionik & Elektrik", "a": "GDU", "t": "Garmin Display Unit", "d": "Anzeigeeinheit, in der PFD und MFD zusammengefasst sind."}, {"g": "Avionik & Elektrik", "a": "AHRS", "t": "Attitude & Heading Reference System", "d": "Fluglage- und Kursreferenz. Ausfall → rotes X + „AHRS FAILURE“ im PFD."}, {"g": "Avionik & Elektrik", "a": "ADC", "t": "Air Data Computer", "d": "Luftdatenrechner (Geschwindigkeit, Höhe, TAS, OAT)."}, {"g": "Avionik & Elektrik", "a": "AI", "t": "Attitude Indicator", "d": "Künstlicher Horizont (bei N/VFR als Standby mit eigenem Akku, z. B. Garmin G5)."}, {"g": "Avionik & Elektrik", "a": "CB", "t": "Circuit Breaker", "d": "Sicherungsautomat. Ausgelöst nur einmal zurücksetzen, wenn flugnotwendig."}, {"g": "Avionik & Elektrik", "a": "ALT 1 / ALT 2", "t": "Alternatoren", "d": "A211: zwei Alternatoren (ALT 1 extern, ALT 2 intern), bei D/VFR und N/VFR stets beide aktiv."}, {"g": "Avionik & Elektrik", "a": "ACL", "t": "Anti-Collision Light", "d": "Zusammenstoß-Warnlicht (im Winglet integriert)."}, {"g": "Avionik & Elektrik", "a": "ELT", "t": "Emergency Locator Transmitter", "d": "Notsender (121,5 MHz / 406). Lage im Flug prüfen."}, {"g": "Avionik & Elektrik", "a": "P/S Heat", "t": "Pitot/Static Heat", "d": "Pitotrohrheizung (optional A211). AUS bei OAT > 15 °C. Keine Vereisungszulassung."}, {"g": "Avionik & Elektrik", "a": "ATC", "t": "Air Traffic Control", "d": "Flugverkehrskontrolle."}, {"g": "Avionik & Elektrik", "a": "COM / NAV", "t": "Communication / Navigation", "d": "Funk- und Navigationsgeräte im Mittelteil des Panels."}, {"g": "Werkstoffe", "a": "GfK", "t": "Glasfaserverstärkter Kunststoff", "d": "Hauptbaustoff der Zelle."}, {"g": "Werkstoffe", "a": "CfK", "t": "Kohlefaserverstärkter Kunststoff", "d": "Lokale Verstärkungen (Holme, Stringer, Überrollbügel)."}, {"g": "Werkstoffe", "a": "AS", "t": "AQUILA Supplement", "d": "Flughandbuch-Ergänzung (z. B. AS-00 Winterbetrieb, AS-05 N/VFR)."}];
+const GLOSSARY = [{"g": "Geschwindigkeiten", "a": "IAS", "t": "Indicated Airspeed", "d": "Angezeigte Geschwindigkeit am Fahrtmesser.", "en": "Indicated Airspeed"}, {"g": "Geschwindigkeiten", "a": "KIAS", "t": "IAS in Knoten", "d": "Angezeigte Geschwindigkeit, in Knoten abgelesen.", "en": "Indicated Airspeed in knots"}, {"g": "Geschwindigkeiten", "a": "CAS", "t": "Calibrated Airspeed", "d": "Um Einbau- und Instrumentenfehler berichtigte IAS; entspricht in MSL/ISA der TAS.", "en": "Calibrated Airspeed"}, {"g": "Geschwindigkeiten", "a": "KCAS", "t": "CAS in Knoten", "d": "Kalibrierte Geschwindigkeit in Knoten.", "en": "Calibrated Airspeed in knots"}, {"g": "Geschwindigkeiten", "a": "TAS", "t": "True Airspeed", "d": "Wahre Geschwindigkeit gegenüber der Luft — CAS berichtigt um Höhe und Temperatur.", "en": "True Airspeed"}, {"g": "Geschwindigkeiten", "a": "GS", "t": "Ground Speed", "d": "Geschwindigkeit über Grund (TAS ± Wind).", "en": "Ground Speed"}, {"g": "Geschwindigkeiten", "a": "VA", "t": "Manövergeschwindigkeit", "d": "112 kt. Oberhalb keine vollen/abrupten Ruderausschläge — Überlastungsgefahr. Sinkt bei geringerer Masse.", "en": "Manoeuvring Speed"}, {"g": "Geschwindigkeiten", "a": "VS", "t": "Überziehgeschwindigkeit", "d": "Überziehgeschwindigkeit ohne Leistung in der jeweiligen Konfiguration.", "en": "Stall Speed (power-off)"}, {"g": "Geschwindigkeiten", "a": "VS0", "t": "Überziehgeschw. Landekonfiguration", "d": "Überziehgeschwindigkeit ohne Leistung mit Landeklappen (Markierung weißer Bogen unten).", "en": "Stall Speed in Landing Configuration"}, {"g": "Geschwindigkeiten", "a": "VX", "t": "Bester Steigwinkel", "d": "52 kt in MSL. Steilster Höhengewinn pro Strecke — fürs Hindernis.", "en": "Best Angle-of-Climb Speed"}, {"g": "Geschwindigkeiten", "a": "VY", "t": "Bestes Steigen", "d": "65 kt in MSL (nimmt mit Höhe ab). Schnellster Höhengewinn pro Zeit.", "en": "Best Rate-of-Climb Speed"}, {"g": "Geschwindigkeiten", "a": "VFE", "t": "Max. mit Klappen", "d": "90 kt. Höchstgeschwindigkeit mit ausgefahrenen Landeklappen (T/O oder LDG).", "en": "Maximum Flap Extended Speed"}, {"g": "Geschwindigkeiten", "a": "VNO", "t": "Max. Reisegeschwindigkeit", "d": "130 kt = Beginn gelber Bogen. Nur in ruhiger Luft und mit Vorsicht überschreiten.", "en": "Maximum Structural Cruising Speed"}, {"g": "Geschwindigkeiten", "a": "VNE", "t": "Never Exceed", "d": "165 kt (rote Linie). Darf in keiner Betriebsart überschritten werden.", "en": "Never Exceed Speed"}, {"g": "Masse & Schwerpunkt", "a": "BE", "t": "Bezugsebene", "d": "Vertikalebene an der Flügelvorderkante (Trennstelle zum Rumpf), von der alle Hebelarme gemessen werden.", "en": "Datum (Reference Datum)"}, {"g": "Masse & Schwerpunkt", "a": "BL", "t": "Bezugslinie", "d": "Festgelegte horizontale Referenzlinie für die Wägung.", "en": "Reference Line"}, {"g": "Masse & Schwerpunkt", "a": "Hebelarm", "t": "Lever Arm", "d": "Horizontaler Abstand des Schwerpunkts eines Bauteils von der BE.", "en": "Arm / Lever Arm"}, {"g": "Masse & Schwerpunkt", "a": "Moment", "t": "Moment", "d": "Produkt aus Masse und Hebelarm eines Bauteils.", "en": "Moment"}, {"g": "Masse & Schwerpunkt", "a": "MTOW", "t": "Max. Startmasse", "d": "750 kg. Höchstzulässige Masse für den Start.", "en": "Maximum Take-Off Weight"}, {"g": "Masse & Schwerpunkt", "a": "MLW", "t": "Max. Landemasse", "d": "750 kg. Bei der Aquila identisch mit MTOW.", "en": "Maximum Landing Weight"}, {"g": "Masse & Schwerpunkt", "a": "MZFW", "t": "Leermasse", "d": "Masse inkl. Öl, Kühlwasser und nicht-ausfliegbarem Treibstoff. Siehe Wägebericht.", "en": "Empty Mass (Max. Zero-Fuel Weight)"}, {"g": "Masse & Schwerpunkt", "a": "Zuladung", "t": "Payload", "d": "Differenz zwischen Abflugmasse und Leermasse.", "en": "Payload / Useful Load"}, {"g": "Masse & Schwerpunkt", "a": "CG / SP", "t": "Schwerpunkt", "d": "Gleichgewichtspunkt. Zulässig 0,427–0,523 m hinter BE (31–40 % MAC).", "en": "Centre of Gravity"}, {"g": "Masse & Schwerpunkt", "a": "MAC", "t": "Mean Aerodynamic Chord", "d": "Mittlere aerodynamische Flügeltiefe = 1,07 m. Bezug für CG-Prozentangaben.", "en": "Mean Aerodynamic Chord"}, {"g": "Meteorologie", "a": "ISA", "t": "Internationale Standardatmosphäre", "d": "15 °C und 1013,25 hPa in MSL; Bezug für alle Leistungsdaten.", "en": "International Standard Atmosphere"}, {"g": "Meteorologie", "a": "MSL", "t": "Mean Sea Level", "d": "Höhe über dem Meeresspiegel.", "en": "Mean Sea Level"}, {"g": "Meteorologie", "a": "OAT", "t": "Outside Air Temperature", "d": "Außenlufttemperatur.", "en": "Outside Air Temperature"}, {"g": "Meteorologie", "a": "SAT", "t": "Static Air Temperature", "d": "Statische Lufttemperatur — entspricht OAT.", "en": "Static Air Temperature"}, {"g": "Meteorologie", "a": "QNH", "t": "Luftdruck auf Meeresniveau", "d": "Auf MSL reduzierter Ortsdruck; eingestellt zeigt der Höhenmesser die Höhe über MSL.", "en": "Altimeter Setting (QNH)"}, {"g": "Meteorologie", "a": "VFR Tag", "t": "D/VFR", "d": "Sichtflug am Tag (Beginn bürgerl. Morgen- bis Ende bürgerl. Abenddämmerung).", "en": "Day VFR"}, {"g": "Meteorologie", "a": "VFR Nacht", "t": "N/VFR", "d": "Sichtflug bei Nacht. Nur A211 (AT01-100B) zugelassen; erfordert u. a. zweiten Alternator.", "en": "Night VFR"}, {"g": "Triebwerk & Leistung", "a": "TOP", "t": "Startleistung (Take-Off Power)", "d": "Höchstzulässige Motorleistung für den Start. A210: 69 kW · A211: 73,5 kW (max. 5 min).", "en": "Take-Off Power"}, {"g": "Triebwerk & Leistung", "a": "MCP", "t": "Max. Dauerleistung", "d": "Höchste dauerhaft zugelassene Leistung = 69 kW bei 2260 U/min.", "en": "Maximum Continuous Power"}, {"g": "Triebwerk & Leistung", "a": "MP", "t": "Manifold Pressure", "d": "Ladedruck. Beim Erhöhen zuerst Drehzahl, dann MP; beim Senken umgekehrt.", "en": "Manifold Pressure"}, {"g": "Triebwerk & Leistung", "a": "RPM", "t": "Revolutions per Minute", "d": "Propellerdrehzahl (Untersetzung 2,43:1). Grün bis 2260 U/min.", "en": "Revolutions per Minute"}, {"g": "Triebwerk & Leistung", "a": "FF", "t": "Fuel Flow", "d": "Treibstoffverbrauch pro Stunde (l/h) laut Reiseflugtabelle.", "en": "Fuel Flow"}, {"g": "Triebwerk & Leistung", "a": "CHT", "t": "Cylinder Head Temperature", "d": "Zylinderkopftemperatur. Max A210: 135 °C · A211: 120 °C (129 bei altem Kopf Zyl. 3).", "en": "Cylinder Head Temperature"}, {"g": "Konfiguration", "a": "UP", "t": "Landeklappe Reisestellung", "d": "Klappen eingefahren (0°).", "en": "Flaps Up / Cruise"}, {"g": "Konfiguration", "a": "T/O", "t": "Landeklappe Startstellung", "d": "Startklappe (17°).", "en": "Flaps Take-Off"}, {"g": "Konfiguration", "a": "LDG", "t": "Landeklappe Landestellung", "d": "Landeklappe (35°).", "en": "Flaps Landing"}, {"g": "Avionik & Elektrik", "a": "PFD", "t": "Primary Flight Display", "d": "Primäres Fluglagedisplay (Garmin G500/G500 TXi bei der A211).", "en": "Primary Flight Display"}, {"g": "Avionik & Elektrik", "a": "MFD", "t": "Multifunktions-Display", "d": "Multifunktionsanzeige (Karte, Motordaten) auf der GDU.", "en": "Multifunction Display"}, {"g": "Avionik & Elektrik", "a": "GDU", "t": "Garmin Display Unit", "d": "Anzeigeeinheit, in der PFD und MFD zusammengefasst sind.", "en": "Garmin Display Unit"}, {"g": "Avionik & Elektrik", "a": "AHRS", "t": "Attitude & Heading Reference System", "d": "Fluglage- und Kursreferenz. Ausfall → rotes X + „AHRS FAILURE“ im PFD.", "en": "Attitude & Heading Reference System"}, {"g": "Avionik & Elektrik", "a": "ADC", "t": "Air Data Computer", "d": "Luftdatenrechner (Geschwindigkeit, Höhe, TAS, OAT).", "en": "Air Data Computer"}, {"g": "Avionik & Elektrik", "a": "AI", "t": "Attitude Indicator", "d": "Künstlicher Horizont (bei N/VFR als Standby mit eigenem Akku, z. B. Garmin G5).", "en": "Attitude Indicator"}, {"g": "Avionik & Elektrik", "a": "CB", "t": "Circuit Breaker", "d": "Sicherungsautomat. Ausgelöst nur einmal zurücksetzen, wenn flugnotwendig.", "en": "Circuit Breaker"}, {"g": "Avionik & Elektrik", "a": "ALT 1 / ALT 2", "t": "Alternatoren", "d": "A211: zwei Alternatoren (ALT 1 extern, ALT 2 intern), bei D/VFR und N/VFR stets beide aktiv.", "en": "Alternators"}, {"g": "Avionik & Elektrik", "a": "ACL", "t": "Anti-Collision Light", "d": "Zusammenstoß-Warnlicht (im Winglet integriert).", "en": "Anti-Collision Light"}, {"g": "Avionik & Elektrik", "a": "ELT", "t": "Emergency Locator Transmitter", "d": "Notsender (121,5 MHz / 406). Lage im Flug prüfen.", "en": "Emergency Locator Transmitter"}, {"g": "Avionik & Elektrik", "a": "P/S Heat", "t": "Pitot/Static Heat", "d": "Pitotrohrheizung (optional A211). AUS bei OAT > 15 °C. Keine Vereisungszulassung.", "en": "Pitot/Static Heat"}, {"g": "Avionik & Elektrik", "a": "ATC", "t": "Air Traffic Control", "d": "Flugverkehrskontrolle.", "en": "Air Traffic Control"}, {"g": "Avionik & Elektrik", "a": "COM / NAV", "t": "Communication / Navigation", "d": "Funk- und Navigationsgeräte im Mittelteil des Panels.", "en": "Communication / Navigation"}, {"g": "Werkstoffe", "a": "GfK", "t": "Glasfaserverstärkter Kunststoff", "d": "Hauptbaustoff der Zelle.", "en": "Glass-Fibre Reinforced Plastic (GFRP)"}, {"g": "Werkstoffe", "a": "CfK", "t": "Kohlefaserverstärkter Kunststoff", "d": "Lokale Verstärkungen (Holme, Stringer, Überrollbügel).", "en": "Carbon-Fibre Reinforced Plastic (CFRP)"}, {"g": "Werkstoffe", "a": "AS", "t": "AQUILA Supplement", "d": "Flughandbuch-Ergänzung (z. B. AS-00 Winterbetrieb, AS-05 N/VFR).", "en": "AQUILA Supplement"}];
 
 function renderGlossary(filter){
   const body=el('gloss-body'); if(!body) return;
   const f=(filter||'').trim().toLowerCase();
-  const list = f ? GLOSSARY.filter(e=>(e.a+' '+e.t+' '+e.d).toLowerCase().includes(f)) : GLOSSARY;
+  const list = f ? GLOSSARY.filter(e=>(e.a+' '+e.t+' '+(e.en||'')+' '+e.d).toLowerCase().includes(f)) : GLOSSARY;
   if(!list.length){ body.innerHTML='<div class="gloss-none">Kein Treffer für \u201E'+filter+'\u201C.</div>'; return; }
   const groups=[...new Set(list.map(e=>e.g))];
   let html='';
   groups.forEach(g=>{
     html+='<div class="gloss-group"><div class="gloss-grouphead mono">'+g.toUpperCase()+'</div>';
     list.filter(e=>e.g===g).forEach(e=>{
-      html+='<div class="gentry"><div class="abbr">'+e.a+'<span class="term">'+e.t+'</span></div><div class="def">'+e.d+'</div></div>';
+      html+='<div class="gentry"><div class="abbr">'+e.a+'<span class="term">'+e.t+'</span>'+(e.en?'<span class="term-en">EN · '+e.en+'</span>':'')+'</div><div class="def">'+e.d+'</div></div>';
     });
     html+='</div>';
   });
@@ -2990,6 +3049,25 @@ function generateRechenDeck(n){
   return out;
 }
 
+
+const COMPARE = [{"grp": "Triebwerk & Propeller", "rows": [{"k": "Motor", "a": "ROTAX 912 S3", "b": "ROTAX 912 S3", "diff": false}, {"k": "Startleistung", "a": "69,0 kW @ 2263 U/min", "b": "73,5 kW @ 2385 U/min (max. 5 min)", "diff": true}, {"k": "Dauerleistung", "a": "69,0 kW @ 2260 U/min", "b": "69,0 kW @ 2260 U/min", "diff": false}, {"k": "Drehzahl rote Linie", "a": "2260 U/min", "b": "2385 U/min (gelb 2260–2385, 5 min)", "diff": true}, {"k": "Propeller", "a": "MTV-21-A/175-05 · 175 cm", "b": "MTV-21-A/170-05 · 170 cm", "diff": true}, {"k": "Untersetzung", "a": "2,43 : 1", "b": "2,43 : 1", "diff": false}]}, {"grp": "Grenzwerte & Markierungen", "rows": [{"k": "CHT max", "a": "135 °C", "b": "120 °C (129 bei altem Kopf Zyl. 3)", "diff": true}, {"k": "Öltemperatur", "a": "50–130 °C", "b": "50–130 °C", "diff": false}, {"k": "Weißer Bogen", "a": "44–90 kt", "b": "39–90 kt", "diff": true}, {"k": "Grüner Bogen", "a": "52–130 kt", "b": "49–130 kt", "diff": true}, {"k": "Gelber Bogen", "a": "130–165 kt", "b": "130–165 kt", "diff": false}, {"k": "VA / VNO / VFE / VNE", "a": "112 / 130 / 90 / 165 kt", "b": "112 / 130 / 90 / 165 kt", "diff": false}, {"k": "Öldruck Minimum", "a": "0,8 bar (unter 1440 U/min)", "b": "0,8 bar (unter 590 U/min)", "diff": true}, {"k": "Max. Betriebshöhe", "a": "Dienstgipfel ~13.000 ft (ISA)", "b": "14.500 ft", "diff": true}]}, {"grp": "Systeme & Betrieb", "rows": [{"k": "Elektrik", "a": "1 Generator (40 A) + Batterie", "b": "2 Alternatoren (ALT 1 + ALT 2) + Batterie", "diff": true}, {"k": "Avionik", "a": "Analog (Standardausrüstung)", "b": "Garmin G500 / G500 TXi (PFD/MFD)", "diff": true}, {"k": "Betriebsarten", "a": "D/VFR (N/VFR per Ergänzung)", "b": "D/VFR und N/VFR", "diff": true}, {"k": "Kühlmittel", "a": "EVANS NPG+ (100 %, wasserfrei)", "b": "Ethylenglykol/Wasser 50/50", "diff": true}, {"k": "Kraftstoffsorten", "a": "EN228 Super/Super+, AVGAS 100LL", "b": "+ zusätzlich AVGAS UL 91", "diff": true}, {"k": "Vereisungsschutz", "a": "Kühlerabdeckung (Placard >15/<5 °C)", "b": "Pitotheizung (opt.), Winterkit AS-00", "diff": true}]}, {"grp": "Gemeinsam (identisch bei beiden)", "rows": [{"k": "MTOW / MLW", "a": "750 kg", "b": "750 kg", "diff": false}, {"k": "Gepäck max.", "a": "40 kg", "b": "40 kg", "diff": false}, {"k": "Schwerpunkt", "a": "0,427–0,523 m hinter BE", "b": "0,427–0,523 m hinter BE", "diff": false}, {"k": "Kraftstoff ausfliegbar", "a": "109,6 L (2×54,8)", "b": "109,6 L (2×54,8)", "diff": false}, {"k": "Ölinhalt", "a": "3,0 L", "b": "3,0 L", "diff": false}, {"k": "Sichere Gleitzahl", "a": "14 (78 kt)", "b": "14 (78 kt)", "diff": false}, {"k": "Seitenwind (nachgew.)", "a": "15 kt", "b": "15 kt", "diff": false}]}];
+
+function renderCompare(){
+  const body=el('compare-body'); if(!body) return;
+  let html='';
+  COMPARE.forEach(g=>{
+    html+='<div class="cmp-group"><div class="cmp-grouphead mono">'+g.grp.toUpperCase()+'</div>';
+    html+='<div class="cmp-head"><span>KENNWERT</span><span>A210</span><span>A211</span></div>';
+    g.rows.forEach(r=>{
+      html+='<div class="cmp-row'+(r.diff?' diff':'')+'"><div class="ck">'+r.k+'</div><div class="ca">'+r.a+'</div><div class="cb">'+r.b+'</div></div>';
+    });
+    html+='</div>';
+  });
+  body.innerHTML=html;
+}
+function openCompare(){ renderCompare(); show('compare'); }
+function compareDiffCount(){ let n=0; COMPARE.forEach(g=>g.rows.forEach(r=>{if(r.diff)n++;})); return n; }
+
 /* ===================== APP LOGIC ===================== */
 
 const MUSTER = {
@@ -3024,6 +3102,7 @@ function initStartCounts(){
   const me=document.getElementById('mc-emg-count'); if(me) me.textContent=EMERGENCIES.length+' Szenarien';
   const mg=document.getElementById('mc-gloss-count'); if(mg) mg.textContent=GLOSSARY.length+' Einträge';
   const mr=document.getElementById('mc-rechen-count'); if(mr) mr.textContent=RECHEN_GENERATORS.length+' Aufgabentypen';
+  const mc=document.getElementById('mc-compare-count'); if(mc) mc.textContent=compareDiffCount()+' Unterschiede';
   const bl=document.getElementById('buildline');
   if(bl) bl.innerHTML='MUSTER <b>'+activeMuster+'</b> · VERSION <b>'+APP_VERSION+'</b> · STAND <b>'+APP_DATE+'</b> · <b>'+QUESTIONS.length+'</b> FRAGEN';
   const cl=document.getElementById('cat-list');
@@ -3035,9 +3114,10 @@ const APP_DATE = "15.10.2026";
 const QUIZ_LENGTH = 30;
 
 const el = id => document.getElementById(id);
-const screens = {home:el('screen-home'), start:el('screen-start'), quiz:el('screen-quiz'), result:el('screen-result'), emgMenu:el('screen-emg-menu'), emg:el('screen-emg'), gloss:el('screen-gloss')};
+const screens = {home:el('screen-home'), start:el('screen-start'), quiz:el('screen-quiz'), result:el('screen-result'), emgMenu:el('screen-emg-menu'), emg:el('screen-emg'), gloss:el('screen-gloss'), compare:el('screen-compare')};
 
 let deck = [], idx = 0, score = 0, answered = false, perCat = {};
+let wrongDeck = [], roundType = 'base';
 
 function show(name){
   Object.values(screens).forEach(s=>s.classList.add('hidden'));
@@ -3056,7 +3136,7 @@ function shuffle(a){
 
 function startQuiz(){
   deck = shuffle(QUESTIONS).slice(0, Math.min(QUIZ_LENGTH, QUESTIONS.length));
-  idx = 0; score = 0; perCat = {};
+  idx = 0; score = 0; perCat = {}; wrongDeck = []; roundType = 'base';
   el('q-total').textContent = deck.length;
   show('quiz');
   renderQuestion();
@@ -3067,7 +3147,15 @@ function startQuizMode(){ lastMode='quiz'; startQuiz(); }
 function startRechen(){
   lastMode='rechen';
   deck = generateRechenDeck(10);
-  idx = 0; score = 0; perCat = {};
+  idx = 0; score = 0; perCat = {}; wrongDeck = []; roundType = 'base';
+  el('q-total').textContent = deck.length;
+  show('quiz');
+  renderQuestion();
+}
+
+function startWrong(){
+  const d = shuffle(wrongDeck);
+  deck = d; idx = 0; score = 0; perCat = {}; wrongDeck = []; roundType = 'wrong';
   el('q-total').textContent = deck.length;
   show('quiz');
   renderQuestion();
@@ -3121,6 +3209,7 @@ function choose(btn, opt, opts){
     const m = document.createElement('span'); m.className='mark'; m.textContent='FALSCH';
     btn.appendChild(m);
     buttons.forEach(b=>{ if(!b.classList.contains('correct')&&b!==btn) b.classList.add('muted'); });
+    wrongDeck.push(q);
   }
   perCat[q.cat] = perCat[q.cat] || {ok:0,n:0};
   perCat[q.cat].n++;
@@ -3157,7 +3246,7 @@ function showResult(){
   const pct = score/deck.length;
   const v = el('r-verdict');
   if(pct >= 0.85){ v.textContent='COCKPIT-READY'; v.className='verdict ok';
-    el('r-sub').textContent='Sehr stark — du kennst deine A210 aus dem Effeff.'; }
+    el('r-sub').textContent='Sehr stark — du kennst deine '+activeMuster+' aus dem Effeff.'; }
   else if(pct >= 0.6){ v.textContent='SOLIDE BASIS'; v.className='verdict mid';
     el('r-sub').textContent='Gutes Fundament. Die verpassten Werte gezielt nacharbeiten.'; }
   else { v.textContent='NACHBRIEFING NÖTIG'; v.className='verdict low';
@@ -3173,11 +3262,26 @@ function showResult(){
     row.innerHTML = '<span>'+c+'</span><span class="bc '+(good?'g':'r')+'">'+d.ok+'/'+d.n+'</span>';
     bd.appendChild(row);
   });
+
+  const bw = el('btn-wrong'), ba = el('btn-again');
+  if(wrongDeck.length > 0){
+    bw.textContent = 'NUR FEHLER ÜBEN (' + wrongDeck.length + ')';
+    bw.classList.remove('hidden'); bw.classList.add('btn-primary'); bw.classList.remove('btn-ghost');
+    ba.classList.remove('btn-primary'); ba.classList.add('btn-ghost');
+  } else {
+    bw.classList.add('hidden');
+    ba.classList.add('btn-primary'); ba.classList.remove('btn-ghost');
+    if(roundType === 'wrong'){
+      v.textContent = 'ALLE FEHLER GEMEISTERT'; v.className = 'verdict ok';
+      el('r-sub').textContent = 'Stark — die Wiederholungen sitzen jetzt. Zeit für eine neue Runde.';
+    }
+  }
 }
 
 el('btn-start').addEventListener('click', startQuizMode);
 el('btn-next').addEventListener('click', next);
 el('btn-again').addEventListener('click', ()=>{ lastMode==='rechen' ? startRechen() : startQuizMode(); });
+el('btn-wrong').addEventListener('click', startWrong);
 el('btn-home').addEventListener('click', ()=>show('home'));
 
 /* keyboard: 1-4 to answer, Enter to advance */
@@ -3266,6 +3370,7 @@ el('mode-quiz').addEventListener('click',()=>show('start'));
 el('mode-emg').addEventListener('click',renderEmgMenu);
 el('mode-gloss').addEventListener('click',openGlossary);
 el('mode-rechen').addEventListener('click',startRechen);
+el('mode-compare').addEventListener('click',openCompare);
 el('gloss-search').addEventListener('input',e=>renderGlossary(e.target.value));
 el('emg-back').addEventListener('click',renderEmgMenu);
 el('emg-mode-learn').addEventListener('click',()=>setEmgMode('learn'));
